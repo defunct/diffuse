@@ -4,6 +4,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -59,6 +60,26 @@ class BeanConverter implements Converter {
                 }
                 path.setLength(index);
             }
+        }
+        for (Field field : beanClass.getFields()) {
+            Converter converter = Diffuse.getConverter(field.getType());
+            String name = field.getName();
+            path.append(name);
+            if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
+                Object value;
+                try {
+                    value = field.get(object);
+                } catch (Exception e) {
+                    throw new DiffuseException(BeanConverter.class, "get", e);
+                }
+                if (value == null) {
+                    properties.put(name, value);
+                } else {
+                    path.append(".");
+                    properties.put(name, converter.convert(value, path, includes));
+                }
+            }
+            path.setLength(index);
         }
         return properties;
     }
