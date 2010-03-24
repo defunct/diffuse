@@ -10,7 +10,7 @@ import java.util.Set;
 class CollectionConverter implements Converter {
     public final static Converter INSTANCE = new CollectionConverter();
     
-    public Object convert(Object object, StringBuilder path, Set<String> includes) {
+    public Object convert(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes) {
         path.append("*.");
         int index = path.length();
         Collection<?> original = (Collection<?>) object;
@@ -19,7 +19,7 @@ class CollectionConverter implements Converter {
             if (item == null) {
                 copy.add(item);
             } else {
-                copy.add(Diffuse.getConverter(item.getClass()).convert(item, path, includes));
+                copy.add(diffuse.getConverter(item.getClass()).convert(diffuse, item, path, includes));
                 path.setLength(index);
             }
         }

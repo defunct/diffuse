@@ -15,6 +15,6 @@ public class NullConverterTest {
     @Test
     public void convert() {
         Object o = new Object();
-        assertSame(NullConverter.INSTANCE.convert(o, new StringBuilder(), Collections.<String>emptySet()), o);
+        assertSame(NullConverter.INSTANCE.convert(new Diffuse(), o, new StringBuilder(), Collections.<String>emptySet()), o);
     }
 }

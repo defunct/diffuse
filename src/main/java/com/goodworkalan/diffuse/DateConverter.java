@@ -12,7 +12,7 @@ public class DateConverter implements Converter {
         
     private static ThreadLocal<DateFormat> formats = new ThreadLocal<DateFormat>();
     
-    public Object convert(Object object, StringBuilder path, Set<String> includes) {
+    public Object convert(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes) {
         DateFormat format = formats.get();
         if (format == null) {
             format = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");

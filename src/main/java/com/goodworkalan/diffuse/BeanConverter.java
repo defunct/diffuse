@@ -24,11 +24,11 @@ class BeanConverter implements Converter {
      *            The set of classes to freeze when encountered.
      * @return A frozen object.
      */
-    public Object convert(Object object, StringBuilder path, Set<String> includes) {
-        return  Collections.unmodifiableMap(modifiable(object, path, includes));
+    public Object convert(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes) {
+        return  Collections.unmodifiableMap(modifiable(diffuse, object, path, includes));
     }
     
-    protected Map<String, Object> modifiable(Object object, StringBuilder path, Set<String> includes) {
+    protected Map<String, Object> modifiable(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes) {
         Class<?> beanClass = object.getClass();
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         BeanInfo beanInfo;
@@ -43,7 +43,7 @@ class BeanConverter implements Converter {
             if (read != null) {
                 String name = descriptor.getName();
                 path.append(name);
-                Converter converter = Diffuse.getConverter(read.getReturnType());
+                Converter converter = diffuse.getConverter(read.getReturnType());
                 if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
                     Object value;
                     try {
@@ -55,14 +55,14 @@ class BeanConverter implements Converter {
                         properties.put(name, value);
                     } else {
                         path.append(".");
-                        properties.put(name, converter.convert(value, path, includes));
+                        properties.put(name, converter.convert(diffuse, value, path, includes));
                     }
                 }
                 path.setLength(index);
             }
         }
         for (Field field : beanClass.getFields()) {
-            Converter converter = Diffuse.getConverter(field.getType());
+            Converter converter = diffuse.getConverter(field.getType());
             String name = field.getName();
             path.append(name);
             if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
@@ -76,7 +76,7 @@ class BeanConverter implements Converter {
                     properties.put(name, value);
                 } else {
                     path.append(".");
-                    properties.put(name, converter.convert(value, path, includes));
+                    properties.put(name, converter.convert(diffuse, value, path, includes));
                 }
             }
             path.setLength(index);

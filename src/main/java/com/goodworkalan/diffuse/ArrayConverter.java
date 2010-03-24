@@ -27,7 +27,7 @@ public class ArrayConverter implements Converter {
      * @param includes
      *            The set of included paths.
      */
-    public Object convert(Object object, StringBuilder path, Set<String> includes) {
+    public Object convert(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes) {
         Object[] original = (Object[]) object;
         List<Object> copy = new ArrayList<Object>();
         path.append("*.");
@@ -37,7 +37,7 @@ public class ArrayConverter implements Converter {
             if (value == null) {
                 copy.add(value);
             } else {
-                copy.add(Diffuse.getConverter(value.getClass()).convert(value, path, includes));
+                copy.add(diffuse.getConverter(value.getClass()).convert(diffuse, value, path, includes));
                 path.setLength(index);
             }
         }

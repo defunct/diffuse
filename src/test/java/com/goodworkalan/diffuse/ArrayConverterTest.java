@@ -23,7 +23,7 @@ public class ArrayConverterTest {
         StringBuilder path = new StringBuilder();
         path.append("object");
         Set<String> includes = Collections.emptySet();
-        Collection<?> collection = (Collection<?>) ArrayConverter.INSTANCE.convert(new String[] { "a", null }, path, includes);
+        Collection<?> collection = (Collection<?>) ArrayConverter.INSTANCE.convert(new Diffuse(), new String[] { "a", null }, path, includes);
         Iterator<?> iterator = collection.iterator();
         assertEquals(iterator.next(), "a");
         assertNull(iterator.next());

@@ -24,7 +24,7 @@ public class NullConverter implements Converter {
      * @param includes
      *            The set of included paths.
      */
-    public Object convert(Object object, StringBuilder path, Set<String> includes) {
+    public Object convert(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes) {
         return object;
     }
 
