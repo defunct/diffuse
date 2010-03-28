@@ -120,6 +120,7 @@ public class Diffuse {
         return getConverter(object.getClass()).convert(this, object, new StringBuilder(), includes);
     }
 
+    // FIXME Add to Lighthouse: rename flatten to diffuse.
     public Object flatten(Object object) {
         if (object == null) {
             return null;
