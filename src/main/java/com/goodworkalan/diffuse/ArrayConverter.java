@@ -5,11 +5,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-
 /**
- * A converter that converts an array in to a <code>List</code>.
+ * An object diffuser that converts an array in to a <code>java.util.List</code>
+ * <p>
+ * This is the only instance where Diffuse turns a primitive type into a more
+ * complicated class. Diffuse is meant to produce a tree of maps, lists and
+ * scalars, where scalars are primitives or strings. Converting arrays to lists
+ * is part of achieving this consistency.
  * 
- * @author ALan Gutierrez
+ * @author Alan Gutierrez
  */
 public class ArrayConverter implements Converter {
     /** The singleton instance of the array converter. */

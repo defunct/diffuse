@@ -11,7 +11,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Converts an object into a <code>java.util.Map</code> where fields and Java
+ * Bean properties are the entries in the map.
+ * 
+ * @author Alan Gutierrez
+ */
 class BeanConverter implements Converter {
+    /** The singleton instance of the bean converter. */
     public final static Converter INSTANCE = new BeanConverter();
 
     /**
@@ -84,6 +91,12 @@ class BeanConverter implements Converter {
         return properties;
     }
     
+    /**
+     * Return true indicating that this is a converter for containers of other
+     * objects.
+     * 
+     * @return True to indicate that this is a container converter.
+     */
     public boolean isContainer() {
         return true;
     }

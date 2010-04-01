@@ -62,6 +62,8 @@ public class PerClassLoaderClassAssociation<V> implements ClassAsssociation<V>{
      * @return The value associated with the given type.
      */
     public V get(Object type) {
+        // FIXME Yes. You need to split this up, ClassLoader association, separate
+        // from type.
         boolean encache = false;
         Class<?> iterator = (Class<?>) type;
         for (;;) {
