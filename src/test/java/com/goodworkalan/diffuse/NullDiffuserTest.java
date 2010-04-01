@@ -10,11 +10,11 @@ import org.testng.annotations.Test;
  * 
  * @author Alan Gutierrez
  */
-public class NullConverterTest {
+public class NullDiffuserTest {
     /** Test the null converter. */
     @Test
     public void convert() {
         Object o = new Object();
-        assertSame(NullConverter.INSTANCE.convert(new Diffuse(), o, new StringBuilder(), Collections.<String>emptySet()), o);
+        assertSame(NullDiffuser.INSTANCE.convert(new Diffuser(), o, new StringBuilder(), Collections.<String>emptySet()), o);
     }
 }

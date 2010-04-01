@@ -13,40 +13,40 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class Diffuse {
-    private final ClassAsssociation<Converter> cache;
+public class Diffuser {
+    private final ClassAsssociation<ObjectDiffuser> cache;
     
-    private final ClassAsssociation<Converter> defaults;
+    private final ClassAsssociation<ObjectDiffuser> defaults;
     
-    public Diffuse() {
-        this(new ConcurrentClassAssociation<Converter>(), new ConcurrentClassAssociation<Converter>());
+    public Diffuser() {
+        this(new ConcurrentClassAssociation<ObjectDiffuser>(), new ConcurrentClassAssociation<ObjectDiffuser>());
     }
 
-    public Diffuse(ClassAsssociation<Converter> cache, ClassAsssociation<Converter> defaults) {
+    public Diffuser(ClassAsssociation<ObjectDiffuser> cache, ClassAsssociation<ObjectDiffuser> defaults) {
         this.cache = cache;
         this.defaults = setDefaultConverters(defaults);
     }
     
-    private static ClassAsssociation<Converter> setDefaultConverters(ClassAsssociation<Converter> defaults) {
-        defaults.put(Byte.class, NullConverter.INSTANCE);
-        defaults.put(Boolean.class, NullConverter.INSTANCE);
-        defaults.put(Short.class, NullConverter.INSTANCE);
-        defaults.put(Character.class, NullConverter.INSTANCE);
-        defaults.put(Integer.class, NullConverter.INSTANCE);
-        defaults.put(Long.class, NullConverter.INSTANCE);
-        defaults.put(Float.class, NullConverter.INSTANCE);
-        defaults.put(Double.class, NullConverter.INSTANCE);
-        defaults.put(String.class, NullConverter.INSTANCE);
-        defaults.put(Object.class, BeanConverter.INSTANCE);
-        defaults.put(Map.class, MapConverter.INSTANCE);
+    private static ClassAsssociation<ObjectDiffuser> setDefaultConverters(ClassAsssociation<ObjectDiffuser> defaults) {
+        defaults.put(Byte.class, NullDiffuser.INSTANCE);
+        defaults.put(Boolean.class, NullDiffuser.INSTANCE);
+        defaults.put(Short.class, NullDiffuser.INSTANCE);
+        defaults.put(Character.class, NullDiffuser.INSTANCE);
+        defaults.put(Integer.class, NullDiffuser.INSTANCE);
+        defaults.put(Long.class, NullDiffuser.INSTANCE);
+        defaults.put(Float.class, NullDiffuser.INSTANCE);
+        defaults.put(Double.class, NullDiffuser.INSTANCE);
+        defaults.put(String.class, NullDiffuser.INSTANCE);
+        defaults.put(Object.class, BeanDiffuser.INSTANCE);
+        defaults.put(Map.class, MapDiffuser.INSTANCE);
         defaults.put(Collection.class, CollectionConverter.INSTANCE);
-        defaults.put(File.class, ToStringConverter.INSTANCE);
-        defaults.put(URL.class, ToStringConverter.INSTANCE);
-        defaults.put(URI.class, ToStringConverter.INSTANCE);
-        defaults.put(Class.class, ClassConverter.INSTANCE);
-        defaults.put(CharSequence.class, ToStringConverter.INSTANCE);
-        defaults.put(StringWriter.class, ToStringConverter.INSTANCE);
-        defaults.put(Date.class, DateConverter.INSTANCE);
+        defaults.put(File.class, ToStringDiffuser.INSTANCE);
+        defaults.put(URL.class, ToStringDiffuser.INSTANCE);
+        defaults.put(URI.class, ToStringDiffuser.INSTANCE);
+        defaults.put(Class.class, ClassDiffuser.INSTANCE);
+        defaults.put(CharSequence.class, ToStringDiffuser.INSTANCE);
+        defaults.put(StringWriter.class, ToStringDiffuser.INSTANCE);
+        defaults.put(Date.class, DateDiffuser.INSTANCE);
         return defaults;
     }
 
@@ -62,7 +62,7 @@ public class Diffuse {
      * @param converter
      *            The object converter.
      */
-    public void setConverter(Class<?> type, Converter converter) {
+    public void setConverter(Class<?> type, ObjectDiffuser converter) {
         defaults.put(type, converter);
     }
 
@@ -79,7 +79,7 @@ public class Diffuse {
      *            The object converter.
      */
     public void toString(Class<?> toStringClass) {
-        setConverter(toStringClass, ToStringConverter.INSTANCE);
+        setConverter(toStringClass, ToStringDiffuser.INSTANCE);
     }
 
     /**
@@ -89,14 +89,14 @@ public class Diffuse {
      *            The object type.
      * @return The object converter.
      */
-    public Converter getConverter(Class<?> type) {
+    public ObjectDiffuser getConverter(Class<?> type) {
         if (type.isArray()) {
-            return ArrayConverter.INSTANCE;
+            return ArrayDiffuser.INSTANCE;
         }
         if (type.isPrimitive()) {
-            return NullConverter.INSTANCE;
+            return NullDiffuser.INSTANCE;
         }
-        Converter converter = cache.get(type);
+        ObjectDiffuser converter = cache.get(type);
         if (converter == null) {
             cache.put(type, converter = defaults.get(type));
         }

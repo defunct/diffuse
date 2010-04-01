@@ -10,11 +10,11 @@ import java.util.Set;
  * 
  * @author Alan Gutierrez
  */
-public class ClassConverter implements Converter {
+public class ClassDiffuser implements ObjectDiffuser {
     /** The singleton instance of the class diffuser. */
-    public final static Converter INSTANCE = new ClassConverter();
+    public final static ObjectDiffuser INSTANCE = new ClassDiffuser();
 
-    public Object convert(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes) {
+    public Object convert(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
         return ((Class<?>) object).getCanonicalName();
     }
 

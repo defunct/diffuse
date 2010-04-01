@@ -16,14 +16,14 @@ import org.testng.annotations.Test;
  *
  * @author Alan Gutierrez
  */
-public class ArrayConverterTest {
+public class ArrayDiffuserTest {
     /** Test array conversion. */
     @Test
     public void convert() {
         StringBuilder path = new StringBuilder();
         path.append("object");
         Set<String> includes = Collections.emptySet();
-        Collection<?> collection = (Collection<?>) ArrayConverter.INSTANCE.convert(new Diffuse(), new String[] { "a", null }, path, includes);
+        Collection<?> collection = (Collection<?>) ArrayDiffuser.INSTANCE.convert(new Diffuser(), new String[] { "a", null }, path, includes);
         Iterator<?> iterator = collection.iterator();
         assertEquals(iterator.next(), "a");
         assertNull(iterator.next());

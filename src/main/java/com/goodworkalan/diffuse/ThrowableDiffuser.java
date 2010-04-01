@@ -1,8 +1,6 @@
 package com.goodworkalan.diffuse;
 
-
-
-public class ThrowableConverter extends BeanConverter {
+public class ThrowableDiffuser extends BeanDiffuser {
     public boolean isContainer() {
         return false;
     }

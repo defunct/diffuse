@@ -9,9 +9,9 @@ import java.util.Set;
  * 
  * @author Alan Gutierrez
  */
-public class NullConverter implements Converter {
+public class NullDiffuser implements ObjectDiffuser {
     /** The singleton instance of the array converter. */
-    public final static Converter INSTANCE = new NullConverter();
+    public final static ObjectDiffuser INSTANCE = new NullDiffuser();
 
     /**
      * Simply return the given object, the path and set of included paths are
@@ -24,7 +24,7 @@ public class NullConverter implements Converter {
      * @param includes
      *            The set of included paths.
      */
-    public Object convert(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes) {
+    public Object convert(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
         return object;
     }
 

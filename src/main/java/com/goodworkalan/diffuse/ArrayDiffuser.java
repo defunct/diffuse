@@ -15,9 +15,9 @@ import java.util.Set;
  * 
  * @author Alan Gutierrez
  */
-public class ArrayConverter implements Converter {
+public class ArrayDiffuser implements ObjectDiffuser {
     /** The singleton instance of the array converter. */
-    public final static Converter INSTANCE = new ArrayConverter();
+    public final static ObjectDiffuser INSTANCE = new ArrayDiffuser();
 
     /**
      * Convert the given object appending an array wildcard to the given path.
@@ -31,7 +31,7 @@ public class ArrayConverter implements Converter {
      * @param includes
      *            The set of included paths.
      */
-    public Object convert(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes) {
+    public Object convert(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
         Object[] original = (Object[]) object;
         List<Object> copy = new ArrayList<Object>();
         path.append("*.");

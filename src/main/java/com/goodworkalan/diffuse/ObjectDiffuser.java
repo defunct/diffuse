@@ -10,8 +10,8 @@ import java.util.Set;
  * converting it to either a map, list or scalar. The {@link #isContainer} method
  * indicates that the object is a container.
  */
-public interface Converter {
-    public Object convert(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes);
+public interface ObjectDiffuser {
+    public Object convert(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes);
     
     public boolean isContainer();
 }

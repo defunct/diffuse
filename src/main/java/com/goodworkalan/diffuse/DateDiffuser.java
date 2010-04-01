@@ -7,12 +7,12 @@ import java.util.Set;
 
 
 
-public class DateConverter implements Converter {
-    public static Converter INSTANCE = new DateConverter(); 
+public class DateDiffuser implements ObjectDiffuser {
+    public static ObjectDiffuser INSTANCE = new DateDiffuser(); 
         
     private static ThreadLocal<DateFormat> formats = new ThreadLocal<DateFormat>();
     
-    public Object convert(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes) {
+    public Object convert(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
         DateFormat format = formats.get();
         if (format == null) {
             format = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");

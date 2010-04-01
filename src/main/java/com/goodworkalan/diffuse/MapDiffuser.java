@@ -5,14 +5,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class MapConverter implements Converter {
-    public final static MapConverter INSTANCE = new MapConverter();
+public class MapDiffuser implements ObjectDiffuser {
+    public final static MapDiffuser INSTANCE = new MapDiffuser();
 
-    public Object convert(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes) {
+    public Object convert(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
         return Collections.unmodifiableMap(modifiable(diffuse, object, path, includes));
     }
     
-    public Map<String, Object> modifiable(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes) {
+    public Map<String, Object> modifiable(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
         int index = path.length();
         Map<?, ?> original = (Map<?, ?>) object;
         Map<String, Object> copy = new LinkedHashMap<String, Object>();
@@ -23,7 +23,7 @@ public class MapConverter implements Converter {
             if (value == null) {
                 copy.put(name, value);
             } else {
-                Converter converter = diffuse.getConverter(value.getClass());
+                ObjectDiffuser converter = diffuse.getConverter(value.getClass());
                 if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
                     path.append(".");
                     copy.put(name, converter.convert(diffuse, value, path, includes));

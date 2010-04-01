@@ -17,9 +17,9 @@ import java.util.Set;
  * 
  * @author Alan Gutierrez
  */
-class BeanConverter implements Converter {
+class BeanDiffuser implements ObjectDiffuser {
     /** The singleton instance of the bean converter. */
-    public final static Converter INSTANCE = new BeanConverter();
+    public final static ObjectDiffuser INSTANCE = new BeanDiffuser();
 
     /**
      * Freeze the given object, copying all arrays and Java collections classes,
@@ -31,18 +31,18 @@ class BeanConverter implements Converter {
      *            The set of classes to freeze when encountered.
      * @return A frozen object.
      */
-    public Object convert(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes) {
+    public Object convert(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
         return  Collections.unmodifiableMap(modifiable(diffuse, object, path, includes));
     }
     
-    protected Map<String, Object> modifiable(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes) {
+    protected Map<String, Object> modifiable(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
         Class<?> beanClass = object.getClass();
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         BeanInfo beanInfo;
         try {
             beanInfo = Introspector.getBeanInfo(beanClass);
         } catch (IntrospectionException e) {
-            throw new DiffuseException(BeanConverter.class, "getBeanInfo", e);
+            throw new DiffuseException(BeanDiffuser.class, "getBeanInfo", e);
         }
         int index = path.length();
         for (PropertyDescriptor descriptor : beanInfo.getPropertyDescriptors()) {
@@ -50,13 +50,13 @@ class BeanConverter implements Converter {
             if (read != null) {
                 String name = descriptor.getName();
                 path.append(name);
-                Converter converter = diffuse.getConverter(read.getReturnType());
+                ObjectDiffuser converter = diffuse.getConverter(read.getReturnType());
                 if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
                     Object value;
                     try {
                         value = read.invoke(object);
                     } catch (Exception e) {
-                        throw new DiffuseException(BeanConverter.class, "read", e);
+                        throw new DiffuseException(BeanDiffuser.class, "read", e);
                     }
                     if (value == null) {
                         properties.put(name, value);
@@ -69,7 +69,7 @@ class BeanConverter implements Converter {
             }
         }
         for (Field field : beanClass.getFields()) {
-            Converter converter = diffuse.getConverter(field.getType());
+            ObjectDiffuser converter = diffuse.getConverter(field.getType());
             String name = field.getName();
             path.append(name);
             if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
@@ -77,7 +77,7 @@ class BeanConverter implements Converter {
                 try {
                     value = field.get(object);
                 } catch (Exception e) {
-                    throw new DiffuseException(BeanConverter.class, "get", e);
+                    throw new DiffuseException(BeanDiffuser.class, "get", e);
                 }
                 if (value == null) {
                     properties.put(name, value);

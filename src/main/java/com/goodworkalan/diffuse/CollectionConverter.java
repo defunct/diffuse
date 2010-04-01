@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Set;
 
 
-class CollectionConverter implements Converter {
-    public final static Converter INSTANCE = new CollectionConverter();
+class CollectionConverter implements ObjectDiffuser {
+    public final static ObjectDiffuser INSTANCE = new CollectionConverter();
     
-    public Object convert(Diffuse diffuse, Object object, StringBuilder path, Set<String> includes) {
+    public Object convert(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
         path.append("*.");
         int index = path.length();
         Collection<?> original = (Collection<?>) object;
