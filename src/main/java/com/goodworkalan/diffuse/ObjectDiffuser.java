@@ -11,7 +11,7 @@ import java.util.Set;
  * indicates that the object is a container.
  */
 public interface ObjectDiffuser {
-    public Object convert(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes);
+    public Object diffuse(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes);
     
     public boolean isContainer();
 }

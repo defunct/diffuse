@@ -31,7 +31,7 @@ class BeanDiffuser implements ObjectDiffuser {
      *            The set of classes to freeze when encountered.
      * @return A frozen object.
      */
-    public Object convert(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
+    public Object diffuse(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
         return  Collections.unmodifiableMap(modifiable(diffuse, object, path, includes));
     }
     
@@ -62,7 +62,7 @@ class BeanDiffuser implements ObjectDiffuser {
                         properties.put(name, value);
                     } else {
                         path.append(".");
-                        properties.put(name, converter.convert(diffuse, value, path, includes));
+                        properties.put(name, converter.diffuse(diffuse, value, path, includes));
                     }
                 }
                 path.setLength(index);
@@ -83,7 +83,7 @@ class BeanDiffuser implements ObjectDiffuser {
                     properties.put(name, value);
                 } else {
                     path.append(".");
-                    properties.put(name, converter.convert(diffuse, value, path, includes));
+                    properties.put(name, converter.diffuse(diffuse, value, path, includes));
                 }
             }
             path.setLength(index);

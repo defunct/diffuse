@@ -24,7 +24,7 @@ public class NullDiffuser implements ObjectDiffuser {
      * @param includes
      *            The set of included paths.
      */
-    public Object convert(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
+    public Object diffuse(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
         return object;
     }
 

@@ -31,7 +31,7 @@ public class ArrayDiffuser implements ObjectDiffuser {
      * @param includes
      *            The set of included paths.
      */
-    public Object convert(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
+    public Object diffuse(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
         Object[] original = (Object[]) object;
         List<Object> copy = new ArrayList<Object>();
         path.append("*.");
@@ -41,7 +41,7 @@ public class ArrayDiffuser implements ObjectDiffuser {
             if (value == null) {
                 copy.add(value);
             } else {
-                copy.add(diffuse.getConverter(value.getClass()).convert(diffuse, value, path, includes));
+                copy.add(diffuse.getConverter(value.getClass()).diffuse(diffuse, value, path, includes));
                 path.setLength(index);
             }
         }

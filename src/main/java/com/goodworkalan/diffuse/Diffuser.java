@@ -117,7 +117,7 @@ public class Diffuser {
         if (object == null) {
             return null;
         }
-        return getConverter(object.getClass()).convert(this, object, new StringBuilder(), includes);
+        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), includes);
     }
 
     // FIXME Add to Lighthouse: rename flatten to diffuse.
@@ -125,20 +125,20 @@ public class Diffuser {
         if (object == null) {
             return null;
         }
-        return getConverter(object.getClass()).convert(this, object, new StringBuilder(), Collections.singleton("\0"));
+        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), Collections.singleton("\0"));
     }
 
     public Object flatten(Object object, boolean recurse) {
         if (object == null) {
             return null;
         }
-        return getConverter(object.getClass()).convert(this, object, new StringBuilder(), recurse ? Collections.<String>emptySet() : Collections.singleton("\0"));
+        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), recurse ? Collections.<String>emptySet() : Collections.singleton("\0"));
     }
 
     public Object flatten(Object object, String...includes) {
         if (object == null) {
             return null;
         }
-        return getConverter(object.getClass()).convert(this, object, new StringBuilder(), new HashSet<String>(Arrays.asList(includes)));
+        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), new HashSet<String>(Arrays.asList(includes)));
     }
 }

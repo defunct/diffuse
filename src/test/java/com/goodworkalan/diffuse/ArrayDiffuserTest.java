@@ -23,7 +23,7 @@ public class ArrayDiffuserTest {
         StringBuilder path = new StringBuilder();
         path.append("object");
         Set<String> includes = Collections.emptySet();
-        Collection<?> collection = (Collection<?>) ArrayDiffuser.INSTANCE.convert(new Diffuser(), new String[] { "a", null }, path, includes);
+        Collection<?> collection = (Collection<?>) ArrayDiffuser.INSTANCE.diffuse(new Diffuser(), new String[] { "a", null }, path, includes);
         Iterator<?> iterator = collection.iterator();
         assertEquals(iterator.next(), "a");
         assertNull(iterator.next());

@@ -8,7 +8,7 @@ import java.util.Set;
 public class MapDiffuser implements ObjectDiffuser {
     public final static MapDiffuser INSTANCE = new MapDiffuser();
 
-    public Object convert(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
+    public Object diffuse(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
         return Collections.unmodifiableMap(modifiable(diffuse, object, path, includes));
     }
     
@@ -26,7 +26,7 @@ public class MapDiffuser implements ObjectDiffuser {
                 ObjectDiffuser converter = diffuse.getConverter(value.getClass());
                 if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
                     path.append(".");
-                    copy.put(name, converter.convert(diffuse, value, path, includes));
+                    copy.put(name, converter.diffuse(diffuse, value, path, includes));
                 }
             }
             path.setLength(index);

@@ -15,6 +15,6 @@ public class NullDiffuserTest {
     @Test
     public void convert() {
         Object o = new Object();
-        assertSame(NullDiffuser.INSTANCE.convert(new Diffuser(), o, new StringBuilder(), Collections.<String>emptySet()), o);
+        assertSame(NullDiffuser.INSTANCE.diffuse(new Diffuser(), o, new StringBuilder(), Collections.<String>emptySet()), o);
     }
 }
