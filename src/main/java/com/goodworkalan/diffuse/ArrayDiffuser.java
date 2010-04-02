@@ -49,12 +49,12 @@ public class ArrayDiffuser implements ObjectDiffuser {
     }
 
     /**
-     * Return true indicating that this is a converter for containers of other
-     * objects.
+     * Return false indicating that this is a diffuser for containers of other
+     * objects and not a scalar.
      * 
-     * @return True to indicate that this is a container converter.
+     * @return False to indicate that this is not a scalar converter.
      */
-    public boolean isContainer() {
-        return true;
+    public boolean isScalar() {
+        return false;
     }
 }

@@ -24,7 +24,7 @@ public class MapDiffuser implements ObjectDiffuser {
                 copy.put(name, value);
             } else {
                 ObjectDiffuser converter = diffuse.getConverter(value.getClass());
-                if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
+                if (converter.isScalar() || includes.isEmpty() || includes.contains(path.toString())) {
                     path.append(".");
                     copy.put(name, converter.diffuse(diffuse, value, path, includes));
                 }
@@ -34,7 +34,7 @@ public class MapDiffuser implements ObjectDiffuser {
         return copy;
     }
     
-    public boolean isContainer() {
-        return true;
+    public boolean isScalar() {
+        return false;
     }
 }

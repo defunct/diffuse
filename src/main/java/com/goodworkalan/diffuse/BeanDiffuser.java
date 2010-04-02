@@ -51,7 +51,7 @@ class BeanDiffuser implements ObjectDiffuser {
                 String name = descriptor.getName();
                 path.append(name);
                 ObjectDiffuser converter = diffuse.getConverter(read.getReturnType());
-                if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
+                if (converter.isScalar() || includes.isEmpty() || includes.contains(path.toString())) {
                     Object value;
                     try {
                         value = read.invoke(object);
@@ -72,7 +72,7 @@ class BeanDiffuser implements ObjectDiffuser {
             ObjectDiffuser converter = diffuse.getConverter(field.getType());
             String name = field.getName();
             path.append(name);
-            if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
+            if (converter.isScalar() || includes.isEmpty() || includes.contains(path.toString())) {
                 Object value;
                 try {
                     value = field.get(object);
@@ -90,14 +90,14 @@ class BeanDiffuser implements ObjectDiffuser {
         }
         return properties;
     }
-    
+
     /**
-     * Return true indicating that this is a converter for containers of other
-     * objects.
+     * Return false indicating that this is a diffuser for containers of other
+     * objects and not a scalar.
      * 
-     * @return True to indicate that this is a container converter.
+     * @return False to indicate that this is not a scalar converter.
      */
-    public boolean isContainer() {
-        return true;
+    public boolean isScalar() {
+        return false;
     }
 }

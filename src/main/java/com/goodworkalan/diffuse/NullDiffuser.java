@@ -29,13 +29,13 @@ public class NullDiffuser implements ObjectDiffuser {
     }
 
     /**
-     * Return false indicating that this is not a converter for containers of
-     * other objects. This converter should never be used to convert anything
-     * but the primitive types, their object counterparts, and String.
+     * Return true indicating that this is a diffuser for a scalar object. This
+     * converter should never be used to convert anything but the primitive
+     * types, their object counterparts, and String.
      * 
-     * @return True to indicate that this is a container converter.
+     * @return True to indicate that this is a scalar diffuser.
      */
-    public boolean isContainer() {
-        return false;
+    public boolean isScalar() {
+        return true;
     }
 }

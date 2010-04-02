@@ -2,8 +2,6 @@ package com.goodworkalan.diffuse;
 
 import java.util.Set;
 
-
-
 public class ToStringDiffuser implements ObjectDiffuser {
     public final static ObjectDiffuser INSTANCE = new ToStringDiffuser();
 
@@ -11,7 +9,7 @@ public class ToStringDiffuser implements ObjectDiffuser {
         return object.toString();
     }
     
-    public boolean isContainer() {
-        return false;
+    public boolean isScalar() {
+        return true;
     }
 }

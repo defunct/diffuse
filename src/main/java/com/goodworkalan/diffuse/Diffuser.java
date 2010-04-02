@@ -132,6 +132,8 @@ public class Diffuser {
     /**
      * Freeze the given object, copying all arrays and Java collections classes,
      * turning all the classes specified in the list classes into frozen beans.
+     * <p>
+     * FIXME Empty set here needs to be converted to '\0' set.
      * 
      * @param object
      *            The object to freeze.
@@ -139,7 +141,7 @@ public class Diffuser {
      *            The set of classes to freeze when encountered.
      * @return A frozen object.
      */
-    public Object flatten(Object object, Set<String> includes) {
+    public Object diffuse(Object object, Set<String> includes) {
         if (object == null) {
             return null;
         }
@@ -147,21 +149,21 @@ public class Diffuser {
     }
 
     // FIXME Add to Lighthouse: rename flatten to diffuse.
-    public Object flatten(Object object) {
+    public Object diffuse(Object object) {
         if (object == null) {
             return null;
         }
         return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), Collections.singleton("\0"));
     }
 
-    public Object flatten(Object object, boolean recurse) {
+    public Object diffuse(Object object, boolean recurse) {
         if (object == null) {
             return null;
         }
         return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), recurse ? Collections.<String>emptySet() : Collections.singleton("\0"));
     }
 
-    public Object flatten(Object object, String...includes) {
+    public Object diffuse(Object object, String...includes) {
         if (object == null) {
             return null;
         }

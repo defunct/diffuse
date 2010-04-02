@@ -21,7 +21,7 @@ public class DateDiffuser implements ObjectDiffuser {
         return format.format((Date) object);
     }
 
-    public boolean isContainer() {
-        return false;
+    public boolean isScalar() {
+        return true;
     }
 }

@@ -47,5 +47,5 @@ public interface ObjectDiffuser {
      */
     public Object diffuse(Diffuser diffuser, Object object, StringBuilder path, Set<String> includes);
 
-    public boolean isContainer();
+    public boolean isScalar();
 }
