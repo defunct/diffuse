@@ -7,47 +7,43 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 
 public class Diffuser {
-    private final ClassAsssociation<ObjectDiffuser> cache;
-    
-    private final ClassAsssociation<ObjectDiffuser> defaults;
-    
-    public Diffuser() {
-        this(new ConcurrentClassAssociation<ObjectDiffuser>(), new ConcurrentClassAssociation<ObjectDiffuser>());
-    }
+    private final ConcurrentMap<Class<?>, ObjectDiffuser> cache = new ConcurrentHashMap<Class<?>, ObjectDiffuser>();
 
-    public Diffuser(ClassAsssociation<ObjectDiffuser> cache, ClassAsssociation<ObjectDiffuser> defaults) {
-        this.cache = cache;
-        this.defaults = setDefaultConverters(defaults);
-    }
-    
-    private static ClassAsssociation<ObjectDiffuser> setDefaultConverters(ClassAsssociation<ObjectDiffuser> defaults) {
-        defaults.put(Byte.class, NullDiffuser.INSTANCE);
-        defaults.put(Boolean.class, NullDiffuser.INSTANCE);
-        defaults.put(Short.class, NullDiffuser.INSTANCE);
-        defaults.put(Character.class, NullDiffuser.INSTANCE);
-        defaults.put(Integer.class, NullDiffuser.INSTANCE);
-        defaults.put(Long.class, NullDiffuser.INSTANCE);
-        defaults.put(Float.class, NullDiffuser.INSTANCE);
-        defaults.put(Double.class, NullDiffuser.INSTANCE);
-        defaults.put(String.class, NullDiffuser.INSTANCE);
-        defaults.put(Object.class, BeanDiffuser.INSTANCE);
-        defaults.put(Map.class, MapDiffuser.INSTANCE);
-        defaults.put(Collection.class, CollectionConverter.INSTANCE);
-        defaults.put(File.class, ToStringDiffuser.INSTANCE);
-        defaults.put(URL.class, ToStringDiffuser.INSTANCE);
-        defaults.put(URI.class, ToStringDiffuser.INSTANCE);
-        defaults.put(Class.class, ClassDiffuser.INSTANCE);
-        defaults.put(CharSequence.class, ToStringDiffuser.INSTANCE);
-        defaults.put(StringWriter.class, ToStringDiffuser.INSTANCE);
-        defaults.put(Date.class, DateDiffuser.INSTANCE);
-        return defaults;
+    private final ConcurrentMap<Class<?>, ObjectDiffuser> diffusers = new ConcurrentHashMap<Class<?>, ObjectDiffuser>();
+
+    /**
+     * Create a diffuser with reasonable defaults for the most common types. The
+     * default object diffuser, if no other diffusers matches is the
+     * <code>BeanDiffusers</code>.
+     */
+    public Diffuser() {
+        diffusers.put(Byte.class, NullDiffuser.INSTANCE);
+        diffusers.put(Boolean.class, NullDiffuser.INSTANCE);
+        diffusers.put(Short.class, NullDiffuser.INSTANCE);
+        diffusers.put(Character.class, NullDiffuser.INSTANCE);
+        diffusers.put(Integer.class, NullDiffuser.INSTANCE);
+        diffusers.put(Long.class, NullDiffuser.INSTANCE);
+        diffusers.put(Float.class, NullDiffuser.INSTANCE);
+        diffusers.put(Double.class, NullDiffuser.INSTANCE);
+        diffusers.put(String.class, NullDiffuser.INSTANCE);
+        diffusers.put(Object.class, BeanDiffuser.INSTANCE);
+        diffusers.put(Map.class, MapDiffuser.INSTANCE);
+        diffusers.put(Collection.class, CollectionConverter.INSTANCE);
+        diffusers.put(File.class, ToStringDiffuser.INSTANCE);
+        diffusers.put(URL.class, ToStringDiffuser.INSTANCE);
+        diffusers.put(URI.class, ToStringDiffuser.INSTANCE);
+        diffusers.put(Class.class, ClassDiffuser.INSTANCE);
+        diffusers.put(CharSequence.class, ToStringDiffuser.INSTANCE);
+        diffusers.put(StringWriter.class, ToStringDiffuser.INSTANCE);
     }
 
     /**
@@ -63,7 +59,8 @@ public class Diffuser {
      *            The object converter.
      */
     public void setConverter(Class<?> type, ObjectDiffuser converter) {
-        defaults.put(type, converter);
+        cache.clear();
+        diffusers.put(type, converter);
     }
 
     /**
@@ -82,6 +79,19 @@ public class Diffuser {
         setConverter(toStringClass, ToStringDiffuser.INSTANCE);
     }
 
+    private ObjectDiffuser interfaceConverter(Class<?>[] ifaces) {
+        LinkedList<Class<?>> queue = new LinkedList<Class<?>>(Arrays.asList(ifaces));
+        while (!queue.isEmpty()) {
+            Class<?> iface = queue.removeFirst();
+            ObjectDiffuser diffuser = diffusers.get(iface);
+            if (diffuser != null) {
+                return diffuser;
+            }
+            queue.addAll(Arrays.asList((Class<?>[]) iface.getInterfaces()));
+        }
+        return null;
+    }
+
     /**
      * Get the object converter for the given object type.
      * 
@@ -96,13 +106,29 @@ public class Diffuser {
         if (type.isPrimitive()) {
             return NullDiffuser.INSTANCE;
         }
-        ObjectDiffuser converter = cache.get(type);
-        if (converter == null) {
-            cache.put(type, converter = defaults.get(type));
+        ObjectDiffuser diffuser = cache.get(type);
+        if (diffuser == null) {
+            boolean encache = false;
+            Class<?> iterator = type;
+            for (;;) {
+                ObjectDiffuser converter = diffusers.get(iterator);
+                if (converter == null) {
+                    encache = true;
+                    converter = interfaceConverter(iterator.getInterfaces());
+                }
+                if (converter != null) {
+                    if (encache) {
+                        cache.put(iterator, converter);
+                    }
+                    return converter;
+                }
+                encache = true;
+                iterator = iterator.getSuperclass();
+            }
         }
-        return converter;
+        return diffuser;
     }
-
+    
     /**
      * Freeze the given object, copying all arrays and Java collections classes,
      * turning all the classes specified in the list classes into frozen beans.
