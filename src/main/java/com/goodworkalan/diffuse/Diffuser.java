@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentMap;
  * <code>ObjectDiffuser</code> that matches any of their super interfaces. If no
  * <code>ObjectDiffuser</code>, the test is repeated with the super class of the
  * class of the given object and its interfaces and super interfaces. This
- * attempt to match proceeds up the class heirarchy until
+ * attempt to match proceeds up the class hierarchy until
  * <code>java.lang.Object</code> is reached and the default
  * <code>ObjectDiffuser</code> for <code>Object</code> is used.
  * <p>
@@ -133,8 +133,7 @@ public class Diffuser {
     }
 
     private ObjectDiffuser interfaceConverter(Class<?>[] ifaces) {
-        LinkedList<Class<?>> queue = new LinkedList<Class<?>>(Arrays
-                .asList(ifaces));
+        LinkedList<Class<?>> queue = new LinkedList<Class<?>>(Arrays.asList(ifaces));
         while (!queue.isEmpty()) {
             Class<?> iface = queue.removeFirst();
             ObjectDiffuser diffuser = diffusers.get(iface);
@@ -199,11 +198,12 @@ public class Diffuser {
         if (object == null) {
             return null;
         }
-        return getConverter(object.getClass()).diffuse(this, object,
-                new StringBuilder(), includes);
+        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), includes);
     }
 
     // FIXME Add to Lighthouse: rename flatten to diffuse.
+    // FIXME Should default be to just recurse? If so than this makes sense,
+    // because the vararg would be the empty set.
     public Object diffuse(Object object) {
         if (object == null) {
             return null;
@@ -216,20 +216,14 @@ public class Diffuser {
         if (object == null) {
             return null;
         }
-        return getConverter(object.getClass()).diffuse(
-                this,
-                object,
-                new StringBuilder(),
-                recurse ? Collections.<String> emptySet() : Collections
-                        .singleton("\0"));
+        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(),
+                recurse ? Collections.<String> emptySet() : Collections.singleton("\0"));
     }
 
     public Object diffuse(Object object, String... includes) {
         if (object == null) {
             return null;
         }
-        return getConverter(object.getClass()).diffuse(this, object,
-                new StringBuilder(),
-                new HashSet<String>(Arrays.asList(includes)));
+        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), new HashSet<String>(Arrays.asList(includes)));
     }
 }
