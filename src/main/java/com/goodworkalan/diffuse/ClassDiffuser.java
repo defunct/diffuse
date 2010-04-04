@@ -19,9 +19,9 @@ public class ClassDiffuser implements ObjectDiffuser {
     }
 
     /**
-     * Return true indicating that this is a diffuser for a scalar object.
+     * Return false indicating that this is a diffuser for a scalar object.
      * 
-     * @return True to indicate that this is a scalar converter.
+     * @return Flase to indicate that this is a scalar converter.
      */
     public boolean isContainer() {
         return false;

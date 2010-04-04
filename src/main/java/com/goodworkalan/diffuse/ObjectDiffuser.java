@@ -14,9 +14,9 @@ import java.util.Set;
  */
 public interface ObjectDiffuser {
     /**
-     * Diffuse the given object, converting it to a map, list, or scalar where a
-     * scalar is a primitive or string. Any nested objects can be diffused using
-     * the given root diffuser.
+     * Diffuse the given <code>object</code>, converting it to a map, list, or
+     * scalar where a scalar is a primitive or string. Any nested objects can be
+     * diffused using the given root <code>diffuser</code>.
      * <p>
      * Implementations of this interface that diffuse objects by converting them
      * into into maps should only include non-scalar entries if either the given

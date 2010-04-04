@@ -21,6 +21,42 @@ import java.util.concurrent.ConcurrentMap;
  * and lists will be unmodifiable. Any attempt to add or remove elements from
  * the maps and lists will result in an
  * <code>UnsupportedOperationException</code>.
+ * <p>
+ * An object in the object graph is converted using an {@link ObjectDiffuser}
+ * implementation. The <code>Diffuser</code> keeps a map that associates classes
+ * and interfaces with <code>ObjectDiffuser</code> implementations.
+ * <p>
+ * When an object is diffused, it is returned immediately if it is null. It is
+ * converted into a list if it is an array. Otherwise, the
+ * <code>ObjectDiffuser</code> map is checked for an object diffuser that
+ * matches the type of the object. If none is found, then the
+ * <code>ObjectDiffuser</code> map is checked for an <code>ObjectDiffuser</code>
+ * that matches any of the interfaces implemented by the type, or an
+ * <code>ObjectDiffuser</code> that matches any of their super interfaces. If no
+ * <code>ObjectDiffuser</code>, the test is repeated with the super class of the
+ * class of the given object and its interfaces and super interfaces. This
+ * attempt to match proceeds up the class heirarchy until
+ * <code>java.lang.Object</code> is reached and the default
+ * <code>ObjectDiffuser</code> for <code>Object</code> is used.
+ * <p>
+ * In the case of class that implements two interfaces that both have
+ * <code>ObjectDiffuser</code> instances mapped to their type in the
+ * <code>Diffuser</code> the <code>ObjectDiffuser</code> returned is undefined.
+ * In order to choose a specific <code>ObjectDiffuser</code> in this instance,
+ * one should be mapped directly to the class itself using the
+ * {@link #setConverter(Class, ObjectDiffuser) setConverter} method.
+ * <p>
+ * The ascent up the class hierarchy is potentially time consuming, so the
+ * results of the <code>ObjectDiffuser</code> search are cached. The cache is
+ * cleared every time the {@link #setConverter(Class, ObjectDiffuser)
+ * setConverter} method is called. Mapping <code>ObjectDiffuser</code>
+ * implementations should be done before a <code>Diffuser</code> is used to
+ * diffuser an object.
+ * <p>
+ * Upon creation, map is populated with reasonable defaults for the
+ * <code>java.util</code> containers, the primitives and <code>Object</code>
+ * derived counterparts, and <code>String</code>. Additionally, some reasonable
+ * defaults as associated with some common Java types.
  * 
  * @author Alan Gutierrez
  */
