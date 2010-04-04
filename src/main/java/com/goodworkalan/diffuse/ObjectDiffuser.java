@@ -47,5 +47,19 @@ public interface ObjectDiffuser {
      */
     public Object diffuse(Diffuser diffuser, Object object, StringBuilder path, Set<String> includes);
 
-    public boolean isScalar();
+    /**
+     * Return true if the diffuser converts objects that act as containers for
+     * other objects. During a diffusion, if a container is encountered, it is
+     * only diffused if the container is included in the set of paths to
+     * include. Those include paths do not affect non-container objects, which
+     * are always diffused. The object diffuser for an object reports on whether
+     * or not the the object is a container object.
+     * <p>
+     * Non-container diffusers do not necessarily produce scalar objects;
+     * primitives or strings. They can produce maps and lists but they do not
+     * descend into an object graph of arbitrary types.
+     * 
+     * @return True if the diffuser converts containers.
+     */
+    public boolean isContainer();
 }

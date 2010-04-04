@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * An object diffuser that converts an array in to a <code>java.util.List</code>
+ * An object diffuser that converts an array in to an unmodifiable
+ * <code>java.util.List</code>.
  * <p>
  * This is the only instance where Diffuse turns a primitive type into a more
  * complicated class. Diffuse is meant to produce a tree of maps, lists and
@@ -16,13 +17,20 @@ import java.util.Set;
  * @author Alan Gutierrez
  */
 public class ArrayDiffuser implements ObjectDiffuser {
-    /** The singleton instance of the array converter. */
+    /** The singleton instance of the array diffuser. */
     public final static ObjectDiffuser INSTANCE = new ArrayDiffuser();
 
     /**
-     * Convert the given object appending an array wildcard to the given path.
-     * The given set of included paths is forwarded to converters that generate
-     * hashes.
+     * Convert the given <code>object</code> into an unmodifiable
+     * <code>java.util.List</code> using the given root <code>diffuser</code> to
+     * diffuse the list elements.
+     * <p>
+     * Before using the root diffuser to diffuse an element, the array diffuser
+     * will append an asterisk to act as a wild card character in the path
+     * maintained in the given <code>path</code> reference as the object diffusers
+     * recursively descend an object graph. Users will specify container objects
+     * to include in diffusion by specifying a wild card to indicate match all 
+     * array elements.
      * 
      * @param object
      *            The array to convert.
@@ -49,12 +57,12 @@ public class ArrayDiffuser implements ObjectDiffuser {
     }
 
     /**
-     * Return false indicating that this is a diffuser for containers of other
-     * objects and not a scalar.
+     * Return true indicating that this diffuser converts an object that is a
+     * container for other objects.
      * 
-     * @return False to indicate that this is not a scalar converter.
+     * @return True to indicate that this is not a container diffuser.
      */
-    public boolean isScalar() {
-        return false;
+    public boolean isContainer() {
+        return true;
     }
 }

@@ -14,10 +14,27 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-
+/**
+ * The root diffuser used to map classes to object diffusers and initiate the
+ * diffusion of object graphs. The output will be an object tree composed of
+ * maps, lists and scalars, where scalars are primitives or strings. The maps
+ * and lists will be unmodifiable. Any attempt to add or remove elements from
+ * the maps and lists will result in an
+ * <code>UnsupportedOperationException</code>.
+ * 
+ * @author Alan Gutierrez
+ */
 public class Diffuser {
+    /**
+     * The classes to their object diffusers as resolved by ascending the object
+     * hierarchy, looking for an object diffuser that will diffuse a super class
+     * or interface. This cache is reset when a new object diffuser is assigned
+     * using the {@link #setConverter(Class, ObjectDiffuser) setConverter}
+     * method.
+     */
     private final ConcurrentMap<Class<?>, ObjectDiffuser> cache = new ConcurrentHashMap<Class<?>, ObjectDiffuser>();
 
+    /** Map of assigned classes to object diffusers. */
     private final ConcurrentMap<Class<?>, ObjectDiffuser> diffusers = new ConcurrentHashMap<Class<?>, ObjectDiffuser>();
 
     /**
@@ -80,7 +97,8 @@ public class Diffuser {
     }
 
     private ObjectDiffuser interfaceConverter(Class<?>[] ifaces) {
-        LinkedList<Class<?>> queue = new LinkedList<Class<?>>(Arrays.asList(ifaces));
+        LinkedList<Class<?>> queue = new LinkedList<Class<?>>(Arrays
+                .asList(ifaces));
         while (!queue.isEmpty()) {
             Class<?> iface = queue.removeFirst();
             ObjectDiffuser diffuser = diffusers.get(iface);
@@ -128,7 +146,7 @@ public class Diffuser {
         }
         return diffuser;
     }
-    
+
     /**
      * Freeze the given object, copying all arrays and Java collections classes,
      * turning all the classes specified in the list classes into frozen beans.
@@ -145,7 +163,8 @@ public class Diffuser {
         if (object == null) {
             return null;
         }
-        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), includes);
+        return getConverter(object.getClass()).diffuse(this, object,
+                new StringBuilder(), includes);
     }
 
     // FIXME Add to Lighthouse: rename flatten to diffuse.
@@ -153,20 +172,28 @@ public class Diffuser {
         if (object == null) {
             return null;
         }
-        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), Collections.singleton("\0"));
+        return getConverter(object.getClass()).diffuse(this, object,
+                new StringBuilder(), Collections.singleton("\0"));
     }
 
     public Object diffuse(Object object, boolean recurse) {
         if (object == null) {
             return null;
         }
-        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), recurse ? Collections.<String>emptySet() : Collections.singleton("\0"));
+        return getConverter(object.getClass()).diffuse(
+                this,
+                object,
+                new StringBuilder(),
+                recurse ? Collections.<String> emptySet() : Collections
+                        .singleton("\0"));
     }
 
-    public Object diffuse(Object object, String...includes) {
+    public Object diffuse(Object object, String... includes) {
         if (object == null) {
             return null;
         }
-        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), new HashSet<String>(Arrays.asList(includes)));
+        return getConverter(object.getClass()).diffuse(this, object,
+                new StringBuilder(),
+                new HashSet<String>(Arrays.asList(includes)));
     }
 }

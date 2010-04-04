@@ -26,7 +26,7 @@ class CollectionConverter implements ObjectDiffuser {
         return Collections.unmodifiableList(copy);
     }
     
-    public boolean isScalar() {
-        return false;
+    public boolean isContainer() {
+        return true;
     }
 }

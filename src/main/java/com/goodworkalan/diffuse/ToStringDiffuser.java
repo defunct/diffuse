@@ -9,7 +9,7 @@ public class ToStringDiffuser implements ObjectDiffuser {
         return object.toString();
     }
     
-    public boolean isScalar() {
-        return true;
+    public boolean isContainer() {
+        return false;
     }
 }

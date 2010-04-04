@@ -35,7 +35,7 @@ public class NullDiffuser implements ObjectDiffuser {
      * 
      * @return True to indicate that this is a scalar diffuser.
      */
-    public boolean isScalar() {
-        return true;
+    public boolean isContainer() {
+        return false;
     }
 }
