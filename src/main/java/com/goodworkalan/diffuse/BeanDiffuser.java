@@ -78,7 +78,7 @@ class BeanDiffuser implements ObjectDiffuser {
                 String name = descriptor.getName();
                 path.append(name);
                 ObjectDiffuser converter = diffuser.getConverter(read.getReturnType());
-                if (converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
+                if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
                     Object value;
                     try {
                         value = read.invoke(object);
@@ -99,7 +99,7 @@ class BeanDiffuser implements ObjectDiffuser {
             ObjectDiffuser converter = diffuser.getConverter(field.getType());
             String name = field.getName();
             path.append(name);
-            if (converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
+            if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
                 Object value;
                 try {
                     value = field.get(object);

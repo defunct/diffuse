@@ -8,7 +8,8 @@ import java.util.Set;
  * <p>
  * Implementations of this interface will diffuse an object in an object graph,
  * converting it to either a map, list or scalar. The {@link #isContainer}
- * method indicates that the object is a container.
+ * method indicates that the object is a container, an object that will be
+ * converted to a map or list.
  * 
  * @author Alan Gutierrez
  */

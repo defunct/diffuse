@@ -161,21 +161,16 @@ public class Diffuser {
         }
         ObjectDiffuser diffuser = cache.get(type);
         if (diffuser == null) {
-            boolean encache = false;
             Class<?> iterator = type;
             for (;;) {
                 ObjectDiffuser converter = diffusers.get(iterator);
                 if (converter == null) {
-                    encache = true;
                     converter = interfaceConverter(iterator.getInterfaces());
                 }
                 if (converter != null) {
-                    if (encache) {
-                        cache.put(iterator, converter);
-                    }
+                    cache.put(type, converter);
                     return converter;
                 }
-                encache = true;
                 iterator = iterator.getSuperclass();
             }
         }
@@ -201,23 +196,20 @@ public class Diffuser {
         return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), includes);
     }
 
-    // FIXME Add to Lighthouse: rename flatten to diffuse.
     // FIXME Should default be to just recurse? If so than this makes sense,
     // because the vararg would be the empty set.
     public Object diffuse(Object object) {
         if (object == null) {
             return null;
         }
-        return getConverter(object.getClass()).diffuse(this, object,
-                new StringBuilder(), Collections.singleton("\0"));
+        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), Collections.singleton("\0"));
     }
 
     public Object diffuse(Object object, boolean recurse) {
         if (object == null) {
             return null;
         }
-        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(),
-                recurse ? Collections.<String> emptySet() : Collections.singleton("\0"));
+        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), recurse ? Collections.<String> emptySet() : Collections.singleton("\0"));
     }
 
     public Object diffuse(Object object, String... includes) {

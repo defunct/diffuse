@@ -40,7 +40,7 @@ public class MapDiffuser implements ObjectDiffuser {
                 copy.put(name, value);
             } else {
                 ObjectDiffuser converter = diffuser.getConverter(value.getClass());
-                if (converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
+                if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
                     path.append(".");
                     copy.put(name, converter.diffuse(diffuser, value, path, includes));
                 }

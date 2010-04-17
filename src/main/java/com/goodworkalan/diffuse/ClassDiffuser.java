@@ -21,7 +21,7 @@ public class ClassDiffuser implements ObjectDiffuser {
     /**
      * Return false indicating that this is a diffuser for a scalar object.
      * 
-     * @return Flase to indicate that this is a scalar converter.
+     * @return False to indicate that this is a scalar converter.
      */
     public boolean isContainer() {
         return false;
