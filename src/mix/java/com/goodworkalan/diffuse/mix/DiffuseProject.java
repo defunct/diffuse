@@ -14,6 +14,7 @@ public class DiffuseProject extends ProjectModule {
                 .main()
                     .depends()
                         .artifact(new Artifact("com.github.bigeasy.danger/danger/0.1"))
+                        .artifact(new Artifact("com.github.bigeasy.class-association/class-association/0.1"))
                         .end()
                     .end()
                 .test()
