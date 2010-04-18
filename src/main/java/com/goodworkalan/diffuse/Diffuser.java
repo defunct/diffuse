@@ -8,11 +8,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+
+import com.goodworkalan.utility.ClassAssociation;
 
 /**
  * The root diffuser used to map classes to object diffusers and initiate the
@@ -61,42 +60,33 @@ import java.util.concurrent.ConcurrentMap;
  * @author Alan Gutierrez
  */
 public class Diffuser {
-    /**
-     * The classes to their object diffusers as resolved by ascending the object
-     * hierarchy, looking for an object diffuser that will diffuse a super class
-     * or interface. This cache is reset when a new object diffuser is assigned
-     * using the {@link #setConverter(Class, ObjectDiffuser) setConverter}
-     * method.
-     */
-    private final ConcurrentMap<Class<?>, ObjectDiffuser> cache = new ConcurrentHashMap<Class<?>, ObjectDiffuser>();
-
-    /** Map of assigned classes to object diffusers. */
-    private final ConcurrentMap<Class<?>, ObjectDiffuser> diffusers = new ConcurrentHashMap<Class<?>, ObjectDiffuser>();
-
+    /** The mapping of classes to their object diffusers. */
+    private final ClassAssociation<ObjectDiffuser> associations = new ClassAssociation<ObjectDiffuser>();
+ 
     /**
      * Create a diffuser with reasonable defaults for the most common types. The
      * default object diffuser, if no other diffusers matches is the
      * <code>BeanDiffusers</code>.
      */
     public Diffuser() {
-        diffusers.put(Byte.class, NullDiffuser.INSTANCE);
-        diffusers.put(Boolean.class, NullDiffuser.INSTANCE);
-        diffusers.put(Short.class, NullDiffuser.INSTANCE);
-        diffusers.put(Character.class, NullDiffuser.INSTANCE);
-        diffusers.put(Integer.class, NullDiffuser.INSTANCE);
-        diffusers.put(Long.class, NullDiffuser.INSTANCE);
-        diffusers.put(Float.class, NullDiffuser.INSTANCE);
-        diffusers.put(Double.class, NullDiffuser.INSTANCE);
-        diffusers.put(String.class, NullDiffuser.INSTANCE);
-        diffusers.put(Object.class, BeanDiffuser.INSTANCE);
-        diffusers.put(Map.class, MapDiffuser.INSTANCE);
-        diffusers.put(Collection.class, CollectionConverter.INSTANCE);
-        diffusers.put(File.class, ToStringDiffuser.INSTANCE);
-        diffusers.put(URL.class, ToStringDiffuser.INSTANCE);
-        diffusers.put(URI.class, ToStringDiffuser.INSTANCE);
-        diffusers.put(Class.class, ClassDiffuser.INSTANCE);
-        diffusers.put(CharSequence.class, ToStringDiffuser.INSTANCE);
-        diffusers.put(StringWriter.class, ToStringDiffuser.INSTANCE);
+        associations.derived(Byte.class, NullDiffuser.INSTANCE);
+        associations.derived(Boolean.class, NullDiffuser.INSTANCE);
+        associations.derived(Short.class, NullDiffuser.INSTANCE);
+        associations.derived(Character.class, NullDiffuser.INSTANCE);
+        associations.derived(Integer.class, NullDiffuser.INSTANCE);
+        associations.derived(Long.class, NullDiffuser.INSTANCE);
+        associations.derived(Float.class, NullDiffuser.INSTANCE);
+        associations.derived(Double.class, NullDiffuser.INSTANCE);
+        associations.derived(String.class, NullDiffuser.INSTANCE);
+        associations.derived(Object.class, BeanDiffuser.INSTANCE);
+        associations.derived(Map.class, MapDiffuser.INSTANCE);
+        associations.derived(Collection.class, CollectionConverter.INSTANCE);
+        associations.derived(File.class, ToStringDiffuser.INSTANCE);
+        associations.derived(URL.class, ToStringDiffuser.INSTANCE);
+        associations.derived(URI.class, ToStringDiffuser.INSTANCE);
+        associations.derived(Class.class, ClassDiffuser.INSTANCE);
+        associations.derived(CharSequence.class, ToStringDiffuser.INSTANCE);
+        associations.derived(StringWriter.class, ToStringDiffuser.INSTANCE);
     }
 
     /**
@@ -112,8 +102,7 @@ public class Diffuser {
      *            The object converter.
      */
     public void setConverter(Class<?> type, ObjectDiffuser converter) {
-        cache.clear();
-        diffusers.put(type, converter);
+        associations.derived(type, converter);
     }
 
     /**
@@ -132,19 +121,6 @@ public class Diffuser {
         setConverter(toStringClass, ToStringDiffuser.INSTANCE);
     }
 
-    private ObjectDiffuser interfaceConverter(Class<?>[] ifaces) {
-        LinkedList<Class<?>> queue = new LinkedList<Class<?>>(Arrays.asList(ifaces));
-        while (!queue.isEmpty()) {
-            Class<?> iface = queue.removeFirst();
-            ObjectDiffuser diffuser = diffusers.get(iface);
-            if (diffuser != null) {
-                return diffuser;
-            }
-            queue.addAll(Arrays.asList((Class<?>[]) iface.getInterfaces()));
-        }
-        return null;
-    }
-
     /**
      * Get the object converter for the given object type.
      * 
@@ -159,27 +135,13 @@ public class Diffuser {
         if (type.isPrimitive()) {
             return NullDiffuser.INSTANCE;
         }
-        ObjectDiffuser diffuser = cache.get(type);
-        if (diffuser == null) {
-            Class<?> iterator = type;
-            for (;;) {
-                ObjectDiffuser converter = diffusers.get(iterator);
-                if (converter == null) {
-                    converter = interfaceConverter(iterator.getInterfaces());
-                }
-                if (converter != null) {
-                    cache.put(type, converter);
-                    return converter;
-                }
-                iterator = iterator.getSuperclass();
-            }
-        }
-        return diffuser;
+        return associations.get(type);
     }
 
     /**
-     * Freeze the given object, copying all arrays and Java collections classes,
-     * turning all the classes specified in the list classes into frozen beans.
+     * Perform a recursive diffusion of the given <code>object</code> that
+     * includes only the container objects that match one of the paths in the
+     * set of paths given in <code>includes</code>.
      * <p>
      * FIXME Empty set here needs to be converted to '\0' set.
      * 
@@ -196,8 +158,21 @@ public class Diffuser {
         return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), includes);
     }
 
-    // FIXME Should default be to just recurse? If so than this makes sense,
-    // because the vararg would be the empty set.
+    /**
+     * Perform a shallow diffusion of the given <code>object</code>, which
+     * creates a diffused object that does not include and members that are
+     * containers of other objects.
+     * <p>
+     * FIXME Should default be to just recurse? If so than this makes sense,
+     * because the vararg would be the empty set.
+     * <p>
+     * FIXME Maybe rename shallow.
+     * 
+     * @param object
+     *            The object to diffuse.
+     * @return A representation of the object that is either a map, list or
+     *         scalar, where a scalar is a primitive or string.
+     */
     public Object diffuse(Object object) {
         if (object == null) {
             return null;

@@ -9,10 +9,10 @@ import java.util.Set;
  * An object diffuser that converts an array in to an unmodifiable
  * <code>java.util.List</code>.
  * <p>
- * This is the only instance where Diffuse turns a primitive type into a more
- * complicated class. Diffuse is meant to produce a tree of maps, lists and
- * scalars, where scalars are primitives or strings. Converting arrays to lists
- * is part of achieving this consistency.
+ * This is the only instance where Diffuse turns a type into a more complicated
+ * class. Diffuse is meant to produce a tree of maps, lists and scalars, where
+ * scalars are primitives or strings. Converting arrays to lists is part of
+ * achieving this consistency.
  * 
  * @author Alan Gutierrez
  */
