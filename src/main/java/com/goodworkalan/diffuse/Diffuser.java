@@ -69,24 +69,24 @@ public class Diffuser {
      * <code>BeanDiffusers</code>.
      */
     public Diffuser() {
-        associations.derived(Byte.class, NullDiffuser.INSTANCE);
-        associations.derived(Boolean.class, NullDiffuser.INSTANCE);
-        associations.derived(Short.class, NullDiffuser.INSTANCE);
-        associations.derived(Character.class, NullDiffuser.INSTANCE);
-        associations.derived(Integer.class, NullDiffuser.INSTANCE);
-        associations.derived(Long.class, NullDiffuser.INSTANCE);
-        associations.derived(Float.class, NullDiffuser.INSTANCE);
-        associations.derived(Double.class, NullDiffuser.INSTANCE);
-        associations.derived(String.class, NullDiffuser.INSTANCE);
-        associations.derived(Object.class, BeanDiffuser.INSTANCE);
-        associations.derived(Map.class, MapDiffuser.INSTANCE);
-        associations.derived(Collection.class, CollectionConverter.INSTANCE);
-        associations.derived(File.class, ToStringDiffuser.INSTANCE);
-        associations.derived(URL.class, ToStringDiffuser.INSTANCE);
-        associations.derived(URI.class, ToStringDiffuser.INSTANCE);
-        associations.derived(Class.class, ClassDiffuser.INSTANCE);
-        associations.derived(CharSequence.class, ToStringDiffuser.INSTANCE);
-        associations.derived(StringWriter.class, ToStringDiffuser.INSTANCE);
+        associations.assignable(Byte.class, NullDiffuser.INSTANCE);
+        associations.assignable(Boolean.class, NullDiffuser.INSTANCE);
+        associations.assignable(Short.class, NullDiffuser.INSTANCE);
+        associations.assignable(Character.class, NullDiffuser.INSTANCE);
+        associations.assignable(Integer.class, NullDiffuser.INSTANCE);
+        associations.assignable(Long.class, NullDiffuser.INSTANCE);
+        associations.assignable(Float.class, NullDiffuser.INSTANCE);
+        associations.assignable(Double.class, NullDiffuser.INSTANCE);
+        associations.assignable(String.class, NullDiffuser.INSTANCE);
+        associations.assignable(Object.class, BeanDiffuser.INSTANCE);
+        associations.assignable(Map.class, MapDiffuser.INSTANCE);
+        associations.assignable(Collection.class, CollectionConverter.INSTANCE);
+        associations.assignable(File.class, ToStringDiffuser.INSTANCE);
+        associations.assignable(URL.class, ToStringDiffuser.INSTANCE);
+        associations.assignable(URI.class, ToStringDiffuser.INSTANCE);
+        associations.assignable(Class.class, ClassDiffuser.INSTANCE);
+        associations.assignable(CharSequence.class, ToStringDiffuser.INSTANCE);
+        associations.assignable(StringWriter.class, ToStringDiffuser.INSTANCE);
     }
 
     /**
@@ -102,7 +102,7 @@ public class Diffuser {
      *            The object converter.
      */
     public void setConverter(Class<?> type, ObjectDiffuser converter) {
-        associations.derived(type, converter);
+        associations.assignable(type, converter);
     }
 
     /**
