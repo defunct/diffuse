@@ -7,10 +7,10 @@ import com.goodworkalan.danger.ContextualDanger;
 
 /**
  * Used contextual messages since there are only a few errors and those have to
- * do with reflection, so they are generally unrecoverable. There is no connection
- * to the network or writing to file, so most errors are going to be unrecoverable,
- * problems with reflection, missing classes, and casts.
- *
+ * do with reflection, so they are generally unrecoverable. There is no
+ * connection to the network or writing to file, so most errors are going to be
+ * unrecoverable, problems with reflection, missing classes, and casts.
+ * 
  * @author Alan Gutierrez
  */
 @SuppressWarnings("serial")
