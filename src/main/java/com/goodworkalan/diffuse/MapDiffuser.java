@@ -5,9 +5,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+// TODO Document.
 public class MapDiffuser implements ObjectDiffuser {
+    // TODO Document.
     public final static MapDiffuser INSTANCE = new MapDiffuser();
 
+    // TODO Document.
     public Object diffuse(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
         return Collections.unmodifiableMap(modifiable(diffuse, object, path, includes));
     }
@@ -50,6 +53,7 @@ public class MapDiffuser implements ObjectDiffuser {
         return copy;
     }
     
+    // TODO Document.
     public boolean isContainer() {
         return true;
     }

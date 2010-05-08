@@ -180,6 +180,7 @@ public class Diffuser {
         return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), Collections.singleton("\0"));
     }
 
+    // TODO Document.
     public Object diffuse(Object object, boolean recurse) {
         if (object == null) {
             return null;
@@ -187,6 +188,7 @@ public class Diffuser {
         return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), recurse ? Collections.<String> emptySet() : Collections.singleton("\0"));
     }
 
+    // TODO Document.
     public Object diffuse(Object object, String... includes) {
         if (object == null) {
             return null;

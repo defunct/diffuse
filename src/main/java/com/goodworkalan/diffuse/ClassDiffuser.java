@@ -14,6 +14,7 @@ public class ClassDiffuser implements ObjectDiffuser {
     /** The singleton instance of the class diffuser. */
     public final static ObjectDiffuser INSTANCE = new ClassDiffuser();
 
+    // TODO Document.
     public Object diffuse(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
         return ((Class<?>) object).getCanonicalName();
     }
