@@ -30,10 +30,23 @@ public class DiffuseException extends ContextualDanger {
      *            The positioned arguments to the error format string.
      */
     public DiffuseException(Class<?> context, String code, Object...arguments) {
-        super(bundles, context, code, null);
+        super(bundles, context, code, null, arguments);
     }
-    
+
+    /**
+     * Create a diffuse exception with the given context class, the given string
+     * error code, the given cause, and the given positioned parameters.
+     * 
+     * @param context
+     *            The error context.
+     * @param code
+     *            The error code.
+     * @param cause
+     *            The cause.
+     * @param arguments
+     *            The positioned arguments to the error format string.
+     */
     public DiffuseException(Class<?> context, String code, Throwable cause, Object...arguments) {
-        super(bundles, context, code, cause);
+        super(bundles, context, code, cause, arguments);
     }
 }

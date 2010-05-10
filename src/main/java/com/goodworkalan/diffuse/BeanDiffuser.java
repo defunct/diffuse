@@ -4,12 +4,17 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+import com.goodworkalan.reflective.Field;
+import com.goodworkalan.reflective.Method;
 
 /**
  * Diffuses any object into a <code>java.util.Map</code> where fields and Java
@@ -23,6 +28,9 @@ import java.util.Set;
 class BeanDiffuser implements ObjectDiffuser {
     /** The singleton instance of the bean diffuser. */
     public final static ObjectDiffuser INSTANCE = new BeanDiffuser();
+    
+    /** The cache of classes to their list of getters. */
+    private final static ConcurrentMap<Class<?>, List<Getter>> GETTERS = new ConcurrentHashMap<Class<?>, List<Getter>>();
 
     /**
      * Freeze the given object, copying all arrays and Java collections classes,
@@ -67,58 +75,49 @@ class BeanDiffuser implements ObjectDiffuser {
      */
     protected Map<String, Object> modifiable(Diffuser diffuser, Object object, StringBuilder path, Set<String> includes) {
         Class<?> beanClass = object.getClass();
-        Map<String, Object> properties = new LinkedHashMap<String, Object>();
-        BeanInfo beanInfo;
-        try {
-            beanInfo = Introspector.getBeanInfo(beanClass);
-        } catch (IntrospectionException e) {
-            throw new DiffuseException(BeanDiffuser.class, "getBeanInfo", e);
+        List<Getter> getters = GETTERS.get(beanClass);
+        if (getters == null) {
+            Map<String, Getter> properties = new LinkedHashMap<String, Getter>();
+            BeanInfo beanInfo = introspect(beanClass, Object.class);
+            for (PropertyDescriptor descriptor : beanInfo.getPropertyDescriptors()) {
+                java.lang.reflect.Method read = descriptor.getReadMethod();
+                if (read != null) {
+                    String name = descriptor.getName();
+                    properties.put(name, new MethodGetter(new Method(read), name));
+                }
+            }
+            for (java.lang.reflect.Field field : beanClass.getFields()) {
+                properties.put(field.getName(), new FieldGetter(new Field(field)));
+            }
+            getters = new ArrayList<Getter>(properties.values());
+            GETTERS.put(beanClass, getters);
         }
         int index = path.length();
-        for (PropertyDescriptor descriptor : beanInfo.getPropertyDescriptors()) {
-            Method read = descriptor.getReadMethod();
-            if (read != null) {
-                String name = descriptor.getName();
-                path.append(name);
-                ObjectDiffuser converter = diffuser.getConverter(read.getReturnType());
-                if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
-                    Object value;
-                    try {
-                        value = read.invoke(object);
-                    } catch (Exception e) {
-                        throw new DiffuseException(BeanDiffuser.class, "read", e);
-                    }
-                    if (value == null) {
-                        properties.put(name, value);
-                    } else {
-                        path.append(".");
-                        properties.put(name, converter.diffuse(diffuser, value, path, includes));
-                    }
-                }
-                path.setLength(index);
-            }
-        }
-        for (Field field : beanClass.getFields()) {
-            ObjectDiffuser converter = diffuser.getConverter(field.getType());
-            String name = field.getName();
+        Map<String, Object> diffused = new LinkedHashMap<String, Object>();
+        for (Getter getter : getters) {
+            String name = getter.getName();
             path.append(name);
+            ObjectDiffuser converter = diffuser.getConverter(getter.getType());
             if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
-                Object value;
-                try {
-                    value = field.get(object);
-                } catch (Exception e) {
-                    throw new DiffuseException(BeanDiffuser.class, "get", e);
-                }
+                Object value = getter.get(object);
                 if (value == null) {
-                    properties.put(name, value);
+                    diffused.put(name, value);
                 } else {
                     path.append(".");
-                    properties.put(name, converter.diffuse(diffuser, value, path, includes));
+                    diffused.put(name, converter.diffuse(diffuser, value, path, includes));
                 }
             }
             path.setLength(index);
         }
-        return properties;
+        return diffused;
+    }
+    
+    static final BeanInfo introspect(Class<?> beanClass, Class<?> stopClass) {
+        try {
+            return Introspector.getBeanInfo(beanClass, stopClass);
+        } catch (IntrospectionException e) {
+            throw new DiffuseException(BeanDiffuser.class, "getBeanInfo", e, beanClass);
+        }
     }
 
     /**

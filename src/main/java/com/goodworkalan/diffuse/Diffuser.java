@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -86,6 +87,7 @@ public class Diffuser {
         associations.assignable(Class.class, ClassDiffuser.INSTANCE);
         associations.assignable(CharSequence.class, ToStringDiffuser.INSTANCE);
         associations.assignable(StringWriter.class, ToStringDiffuser.INSTANCE);
+        associations.assignable(Date.class, DateDiffuser.INSTANCE);
     }
 
     /**
