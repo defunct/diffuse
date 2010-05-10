@@ -28,14 +28,19 @@ class BeanDiffuser implements ObjectDiffuser {
      * Freeze the given object, copying all arrays and Java collections classes,
      * turning all the classes specified in the list classes into frozen beans.
      * 
+     * @param diffuser
+     *            The object diffuser provider.
      * @param object
-     *            The object to freeze.
-     * @param freeze
-     *            The set of classes to freeze when encountered.
-     * @return A frozen object.
+     *            The object to diffuse.
+     * @param path
+     *            The path of the object in the object graph.
+     * @param includes
+     *            The set of paths to include in the diffused object graph or an
+     *            empty set to include all paths.
+     * @return The object converted into a map of object fields and properties.
      */
-    public Object diffuse(Diffuser diffuse, Object object, StringBuilder path, Set<String> includes) {
-        return  Collections.unmodifiableMap(modifiable(diffuse, object, path, includes));
+    public Object diffuse(Diffuser diffuser, Object object, StringBuilder path, Set<String> includes) {
+        return  Collections.unmodifiableMap(modifiable(diffuser, object, path, includes));
     }
 
     /**
@@ -48,19 +53,17 @@ class BeanDiffuser implements ObjectDiffuser {
      * add or remove elements from the map before it is returned to the user.
      * 
      * @param diffuser
-     *            The root diffuser.
+     *            The object diffuser provider.
      * @param object
      *            The object to diffuse.
      * @param path
-     *            The current object path in the object graph.
+     *            The path of the object in the object graph.
      * @param includes
-     *            The set of paths identifying the container objects to include
-     *            in the diffusion, or an empty set to diffuse the entire object
-     *            graph.
-     * @return An unmodifiable map with an entry for each field or property of
-     *         the Java bean that is either a scalar property or a container
-     *         included in the diffusion.
-     * @see #diffuse(Diffuser, Object, StringBuilder, Set)
+     *            The set of paths to include in the diffused object graph or an
+     *            empty set to include all paths.
+     * @return An unmodifiable map with an diffused object entry for each field
+     *         or property of the object, if the field or property was included
+     *         according to the set of includes.
      */
     protected Map<String, Object> modifiable(Diffuser diffuser, Object object, StringBuilder path, Set<String> includes) {
         Class<?> beanClass = object.getClass();
@@ -122,7 +125,7 @@ class BeanDiffuser implements ObjectDiffuser {
      * Return true indicating that this is a diffuser for containers of other
      * objects and not a scalar.
      * 
-     * @return True to indicate that this is a container converter.
+     * @return True to indicate that this is a container diffuser.
      */
     public boolean isContainer() {
         return true;

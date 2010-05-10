@@ -15,27 +15,28 @@ public class NullDiffuser implements ObjectDiffuser {
     public final static ObjectDiffuser INSTANCE = new NullDiffuser();
 
     /**
-     * Simply return the given object, the path and set of included paths are
-     * ignored.
+     * Simply return the given object since it is already a string or primitive.
+     * 
      * 
      * @param diffuser
-     *            The root diffuser.
+     *            The object diffuser provider.
      * @param object
-     *            The object to diffuse.
+     *            The class to diffuse.
      * @param path
-     *            The object path in the object graph.
+     *            The path of the object in the object graph.
      * @param includes
-     *            The set of included paths.
+     *            The set of paths to include in the diffused object graph or an
+     *            empty set to include all paths.
+     * @return The object.
      */
     public Object diffuse(Diffuser diffuser, Object object, StringBuilder path, Set<String> includes) {
         return object;
     }
 
     /**
-     * Return true indicating that this is an object diffuser for a scalar
-     * object.
+     * Return false indicating that this is a diffuser for a scalar object.
      * 
-     * @return True to indicate that this is a scalar object diffuser.
+     * @return False to indicate that this is a scalar diffuser.
      */
     public boolean isContainer() {
         return false;

@@ -16,8 +16,12 @@ import java.util.Set;
 public interface ObjectDiffuser {
     /**
      * Diffuse the given <code>object</code>, converting it to a map, list, or
-     * scalar where a scalar is a primitive or string. Any nested objects can be
-     * diffused using the given root <code>diffuser</code>.
+     * scalar where a scalar is a primitive or string. Container diffusers will
+     * only diffuse members whose paths are present in the given set of
+     * includes, unless the set of includes is empty, in which case all members
+     * will be included in the diffused object graph. Any nested objects can be
+     * diffused using the object diffuser obtained from the given root
+     * <code>diffuser</code>.
      * <p>
      * Implementations of this interface that diffuse objects by converting them
      * into into maps should only include non-scalar entries if either the given

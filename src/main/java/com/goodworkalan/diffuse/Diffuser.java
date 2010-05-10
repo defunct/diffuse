@@ -6,7 +6,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -15,8 +14,8 @@ import com.goodworkalan.utility.ClassAssociation;
 
 /**
  * The root diffuser used to map classes to object diffusers and initiate the
- * diffusion of object graphs. The output will be an object tree composed of
- * maps, lists and scalars, where scalars are primitives or strings. The maps
+ * diffusion of object graphs. The output will be an object tree composed solely
+ * of maps, lists and scalars, where scalars are primitives or strings. The maps
  * and lists will be unmodifiable. Any attempt to add or remove elements from
  * the maps and lists will result in an
  * <code>UnsupportedOperationException</code>.
@@ -80,7 +79,7 @@ public class Diffuser {
         associations.assignable(String.class, NullDiffuser.INSTANCE);
         associations.assignable(Object.class, BeanDiffuser.INSTANCE);
         associations.assignable(Map.class, MapDiffuser.INSTANCE);
-        associations.assignable(Collection.class, CollectionConverter.INSTANCE);
+        associations.assignable(Collection.class, CollectionDiffuser.INSTANCE);
         associations.assignable(File.class, ToStringDiffuser.INSTANCE);
         associations.assignable(URL.class, ToStringDiffuser.INSTANCE);
         associations.assignable(URI.class, ToStringDiffuser.INSTANCE);
@@ -98,11 +97,11 @@ public class Diffuser {
      * 
      * @param type
      *            The object type.
-     * @param converter
-     *            The object converter.
+     * @param diffuser
+     *            The object diffuser.
      */
-    public void setConverter(Class<?> type, ObjectDiffuser converter) {
-        associations.assignable(type, converter);
+    public void setConverter(Class<?> type, ObjectDiffuser diffuser) {
+        associations.assignable(type, diffuser);
     }
 
     /**
@@ -139,60 +138,31 @@ public class Diffuser {
     }
 
     /**
-     * Perform a recursive diffusion of the given <code>object</code> that
-     * includes only the container objects that match one of the paths in the
-     * set of paths given in <code>includes</code>.
+     * Diffuse the given object creating a diffused object graph that includes
+     * only the child objects that match one of the given include object paths.
+     * If no includes are provided, a shallow copy is performed. If any of the
+     * include paths are the special path "*", then recursive copy is performed
+     * that includes all of the paths.
      * <p>
-     * FIXME Empty set here needs to be converted to '\0' set.
-     * 
-     * @param object
-     *            The object to freeze.
-     * @param freeze
-     *            The set of classes to freeze when encountered.
-     * @return A frozen object.
-     */
-    public Object diffuse(Object object, Set<String> includes) {
-        if (object == null) {
-            return null;
-        }
-        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), includes);
-    }
-
-    /**
-     * Perform a shallow diffusion of the given <code>object</code>, which
-     * creates a diffused object that does not include and members that are
-     * containers of other objects.
-     * <p>
-     * FIXME Should default be to just recurse? If so than this makes sense,
-     * because the vararg would be the empty set.
-     * <p>
-     * FIXME Maybe rename shallow.
+     * Currently, this method only converts object trees. Actually object graphs
+     * will result in endless recursion.
      * 
      * @param object
      *            The object to diffuse.
-     * @return A representation of the object that is either a map, list or
-     *         scalar, where a scalar is a primitive or string.
+     * @return A diffused object graph that contains only maps, lists or
+     *         scalars, where a scalar is a primitive or string.
      */
-    public Object diffuse(Object object) {
-        if (object == null) {
-            return null;
-        }
-        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), Collections.singleton("\0"));
-    }
-
-    // TODO Document.
-    public Object diffuse(Object object, boolean recurse) {
-        if (object == null) {
-            return null;
-        }
-        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), recurse ? Collections.<String> emptySet() : Collections.singleton("\0"));
-    }
-
-    // TODO Document.
     public Object diffuse(Object object, String... includes) {
         if (object == null) {
             return null;
         }
-        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), new HashSet<String>(Arrays.asList(includes)));
+        Set<String> paths = new HashSet<String>(Arrays.asList(includes));
+        if (paths.isEmpty()) {
+            paths.add("\0");
+        }
+        if (paths.contains("*")) {
+            paths.clear();
+        }
+        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), paths);
     }
 }
