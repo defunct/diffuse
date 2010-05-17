@@ -9,8 +9,8 @@ import static org.testng.Assert.assertEquals;
  * @author Alan Gutierrez
  */
 public class DiffuseExceptionCatcher {
-    /** The expected error code. */
-    private String code;
+    /** The expected message key. */
+    private String messageKey;
     
     /** The expected error message. */
     private String message;
@@ -23,14 +23,14 @@ public class DiffuseExceptionCatcher {
      * given error code and the given error message.
      * 
      * @param code
-     *            The expected error code.
+     *            The expected message key.
      * @param message
      *            The expected error message.
      * @param runnable
      *            The body of the test.
      */
     public DiffuseExceptionCatcher(Runnable runnable, String code, String message) {
-        this.code = code;
+        this.messageKey = code;
         this.runnable = runnable;
         this.message = message;
     }
@@ -42,7 +42,7 @@ public class DiffuseExceptionCatcher {
         try {
             runnable.run();
         } catch (DiffuseException e) {
-            assertEquals(e.getMessageKey(), code);
+            assertEquals(e.getMessageKey(), messageKey);
             assertEquals(e.getMessage(), message);
             throw e;
         }

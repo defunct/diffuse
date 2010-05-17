@@ -15,6 +15,10 @@ import java.util.concurrent.ConcurrentMap;
 
 import com.goodworkalan.reflective.Field;
 import com.goodworkalan.reflective.Method;
+import com.goodworkalan.reflective.ReflectiveException;
+import com.goodworkalan.reflective.getter.FieldGetter;
+import com.goodworkalan.reflective.getter.Getter;
+import com.goodworkalan.reflective.getter.MethodGetter;
 
 /**
  * Diffuses any object into a <code>java.util.Map</code> where fields and Java
@@ -99,7 +103,12 @@ class BeanDiffuser implements ObjectDiffuser {
             path.append(name);
             ObjectDiffuser converter = diffuser.getConverter(getter.getType());
             if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
-                Object value = getter.get(object);
+                Object value;
+                try {
+                    value = getter.get(object);
+                } catch (ReflectiveException e) {
+                    throw new DiffuseException(BeanDiffuser.class, "getter", getter.getName(), getter.getType(), object.getClass());
+                }
                 if (value == null) {
                     diffused.put(name, value);
                 } else {
