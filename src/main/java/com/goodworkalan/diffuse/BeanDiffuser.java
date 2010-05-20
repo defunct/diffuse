@@ -13,8 +13,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import com.goodworkalan.reflective.Field;
-import com.goodworkalan.reflective.Method;
 import com.goodworkalan.reflective.ReflectiveException;
 import com.goodworkalan.reflective.getter.FieldGetter;
 import com.goodworkalan.reflective.getter.Getter;
@@ -87,11 +85,11 @@ class BeanDiffuser implements ObjectDiffuser {
                 java.lang.reflect.Method read = descriptor.getReadMethod();
                 if (read != null) {
                     String name = descriptor.getName();
-                    properties.put(name, new MethodGetter(new Method(read), name));
+                    properties.put(name, new MethodGetter(read, name));
                 }
             }
             for (java.lang.reflect.Field field : beanClass.getFields()) {
-                properties.put(field.getName(), new FieldGetter(new Field(field)));
+                properties.put(field.getName(), new FieldGetter(field));
             }
             getters = new ArrayList<Getter>(properties.values());
             GETTERS.put(beanClass, getters);
