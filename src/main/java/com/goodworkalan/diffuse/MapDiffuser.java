@@ -75,7 +75,7 @@ public class MapDiffuser implements ObjectDiffuser {
             if (value == null) {
                 copy.put(name, value);
             } else {
-                ObjectDiffuser converter = diffuser.getConverter(value.getClass());
+                ObjectDiffuser converter = diffuser.getDiffuser(value.getClass());
                 if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
                     path.append(".");
                     copy.put(name, converter.diffuse(diffuser, value, path, includes));

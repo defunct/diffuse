@@ -52,7 +52,7 @@ class CollectionDiffuser implements ObjectDiffuser {
             if (item == null) {
                 copy.add(item);
             } else {
-                copy.add(diffuser.getConverter(item.getClass()).diffuse(diffuser, item, path, includes));
+                copy.add(diffuser.getDiffuser(item.getClass()).diffuse(diffuser, item, path, includes));
                 path.setLength(index);
             }
         }

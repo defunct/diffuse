@@ -61,7 +61,7 @@ import com.goodworkalan.utility.ClassAssociation;
  */
 public class Diffuser {
     /** The mapping of classes to their object diffusers. */
-    private final ClassAssociation<ObjectDiffuser> associations = new ClassAssociation<ObjectDiffuser>();
+    private final ClassAssociation<ObjectDiffuser> associations;
  
     /**
      * Create a diffuser with reasonable defaults for the most common types. The
@@ -69,6 +69,7 @@ public class Diffuser {
      * <code>BeanDiffusers</code>.
      */
     public Diffuser() {
+        associations = new ClassAssociation<ObjectDiffuser>();
         associations.assignable(Byte.class, NullDiffuser.INSTANCE);
         associations.assignable(Boolean.class, NullDiffuser.INSTANCE);
         associations.assignable(Short.class, NullDiffuser.INSTANCE);
@@ -88,6 +89,10 @@ public class Diffuser {
         associations.assignable(CharSequence.class, ToStringDiffuser.INSTANCE);
         associations.assignable(StringWriter.class, ToStringDiffuser.INSTANCE);
         associations.assignable(Date.class, DateDiffuser.INSTANCE);
+    }
+    
+    public Diffuser(Diffuser diffuser) {
+        associations = new ClassAssociation<ObjectDiffuser>(diffuser.associations);
     }
 
     /**
@@ -129,7 +134,7 @@ public class Diffuser {
      *            The object type.
      * @return The object converter.
      */
-    public ObjectDiffuser getConverter(Class<?> type) {
+    public ObjectDiffuser getDiffuser(Class<?> type) {
         if (type.isArray()) {
             return ArrayDiffuser.INSTANCE;
         }
@@ -165,6 +170,6 @@ public class Diffuser {
         if (paths.contains("*")) {
             paths.clear();
         }
-        return getConverter(object.getClass()).diffuse(this, object, new StringBuilder(), paths);
+        return getDiffuser(object.getClass()).diffuse(this, object, new StringBuilder(), paths);
     }
 }

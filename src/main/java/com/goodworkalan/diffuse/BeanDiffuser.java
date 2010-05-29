@@ -99,7 +99,7 @@ class BeanDiffuser implements ObjectDiffuser {
         for (Getter getter : getters) {
             String name = getter.getName();
             path.append(name);
-            ObjectDiffuser converter = diffuser.getConverter(getter.getType());
+            ObjectDiffuser converter = diffuser.getDiffuser(getter.getType());
             if (!converter.isContainer() || includes.isEmpty() || includes.contains(path.toString())) {
                 Object value;
                 try {

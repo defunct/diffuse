@@ -58,7 +58,7 @@ public class ArrayDiffuser implements ObjectDiffuser {
             if (value == null) {
                 copy.add(value);
             } else {
-                copy.add(diffuser.getConverter(value.getClass()).diffuse(diffuser, value, path, includes));
+                copy.add(diffuser.getDiffuser(value.getClass()).diffuse(diffuser, value, path, includes));
                 path.setLength(index);
             }
         }
