@@ -19,11 +19,11 @@ public class DiffuseProject implements ProjectModule {
     public void build(Builder builder) {
         builder
             .cookbook(JavaProject.class)
-                .produces("com.github.bigeasy.diffuse/diffuse/0.1.0.5")
+                .produces("com.github.bigeasy.diffuse/diffuse/0.1.0.6")
                 .depends()
                     .production("com.github.bigeasy.danger/danger/0.+1")
                     .production("com.github.bigeasy.reflective/reflective-getter/0.+1")
-                    .production("com.github.bigeasy.class-association/class-association/0.+1")
+                    .production("com.github.bigeasy.class/class-association/0.+1")
                     .development("org.testng/testng-jdk15/5.10")
                     .development("org.mockito/mockito-core/1.6")
                     .end()
