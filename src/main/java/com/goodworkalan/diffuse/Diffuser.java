@@ -118,10 +118,8 @@ public class Diffuser {
      * inherited by any subsequently created child class loaders of the
      * associated class loader, but not by existing child class loaders.
      * 
-     * @param type
+     * @param toStringClass
      *            The object type.
-     * @param converter
-     *            The object converter.
      */
     public void toString(Class<?> toStringClass) {
         setConverter(toStringClass, ToStringDiffuser.INSTANCE);

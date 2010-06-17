@@ -1,8 +1,5 @@
 package com.goodworkalan.diffuse;
 
-import java.util.ResourceBundle;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.goodworkalan.danger.ContextualDanger;
 
 /**
@@ -15,38 +12,35 @@ import com.goodworkalan.danger.ContextualDanger;
  */
 @SuppressWarnings("serial")
 public class DiffuseException extends ContextualDanger {
-    /** A cache of resource bundles. */
-    private final static ConcurrentHashMap<String, ResourceBundle> bundles = new ConcurrentHashMap<String, ResourceBundle>();
-
-    /**
-     * Create a diffuse exception with the given context class, the given string
-     * error code and the given positioned parameters.
-     * 
-     * @param context
-     *            The error context.
-     * @param code
-     *            The error code.
-     * @param arguments
-     *            The positioned arguments to the error format string.
-     */
+	/**
+	 * Create a diffuse exception with the given context class, the given string
+	 * error code and the given positioned parameters.
+	 * 
+	 * @param context
+	 *            The error context.
+	 * @param code
+	 *            The error code.
+	 * @param arguments
+	 *            The positioned arguments to the error format string.
+	 */
     public DiffuseException(Class<?> context, String code, Object...arguments) {
-        super(bundles, context, code, null, arguments);
+        super(context, code, null, arguments);
     }
 
-    /**
-     * Create a diffuse exception with the given context class, the given string
-     * error code, the given cause, and the given positioned parameters.
-     * 
-     * @param context
-     *            The error context.
-     * @param code
-     *            The error code.
-     * @param cause
-     *            The cause.
-     * @param arguments
-     *            The positioned arguments to the error format string.
-     */
+	/**
+	 * Create a diffuse exception with the given context class, the given string
+	 * error code, the given cause, and the given positioned parameters.
+	 * 
+	 * @param context
+	 *            The error context.
+	 * @param code
+	 *            The error code.
+	 * @param cause
+	 *            The cause.
+	 * @param arguments
+	 *            The positioned arguments to the error format string.
+	 */
     public DiffuseException(Class<?> context, String code, Throwable cause, Object...arguments) {
-        super(bundles, context, code, cause, arguments);
+        super(context, code, cause, arguments);
     }
 }
