@@ -25,7 +25,6 @@ public class DiffuseProject implements ProjectModule {
                     .production("com.github.bigeasy.reflective/reflective-getter/0.+1")
                     .production("com.github.bigeasy.class/class-association/0.+1")
                     .development("org.testng/testng-jdk15/5.10")
-                    .development("org.mockito/mockito-core/1.6")
                     .end()
                 .end()
             .end();
