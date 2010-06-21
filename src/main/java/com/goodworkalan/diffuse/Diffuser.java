@@ -91,6 +91,7 @@ public class Diffuser {
         associations.assignable(Date.class, DateDiffuser.INSTANCE);
     }
     
+    // TODO Document.
     public Diffuser(Diffuser diffuser) {
         associations = new ClassAssociation<ObjectDiffuser>(diffuser.associations);
     }

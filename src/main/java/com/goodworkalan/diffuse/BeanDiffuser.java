@@ -119,6 +119,7 @@ class BeanDiffuser implements ObjectDiffuser {
         return diffused;
     }
     
+    // TODO Document.
     static final BeanInfo introspect(Class<?> beanClass, Class<?> stopClass) {
         try {
             return Introspector.getBeanInfo(beanClass, stopClass);
