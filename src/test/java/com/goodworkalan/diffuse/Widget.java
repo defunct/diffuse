@@ -7,48 +7,52 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO Document.
+/**
+ * A widget.
+ *
+ * @author Alan Gutierrez
+ */
 public class Widget {
-    // TODO Document.
+    /** The nested widget. */
     public Widget widget;
     
-    // TODO Document.
+    /** The other widget. */
     private Widget other;
     
-    // TODO Document.
+    /** The text for testing string diffusion. */
     public String string;
     
-    // TODO Document.
+    /** The type for testing class diffusion. */
     public Class<?> type;
     
-    // TODO Document.
+    /** The list for testing list diffusion. */
     public List<String> list = new ArrayList<String>();
 
-    // TODO Document.
+    /** The map for testing map diffusion. */
     public Map<String, Object> map = new HashMap<String, Object>();
     
-    // TODO Document.
+    /** A file for testing to string diffusion. */
     public File file;
 
-    // TODO Document.
+    /** A date for testing to time diffusion. */
     public Date date;
 
-    // TODO Document.
+    /** A getter for the other <code>Widget</code> for testing bean properties. */
     public Widget getOther() {
         return other;
     }
     
-    // TODO Document.
+    /** A getter an integer for testing bean properties. */
     public int getInteger() {
         return 1;
     }
 
-    // TODO Document.
+    /** A setter for the other <code>Widget</code> for testing bean properties. */
     public void setOther(Widget other) {
         this.other = other;
     }
     
-    // TODO Document.
+    /** Do nothing setter. */
     public void setNothing(String nothing) {
     }
 }

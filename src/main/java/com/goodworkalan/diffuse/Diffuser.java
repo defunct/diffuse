@@ -90,8 +90,14 @@ public class Diffuser {
         associations.assignable(StringWriter.class, ToStringDiffuser.INSTANCE);
         associations.assignable(Date.class, DateDiffuser.INSTANCE);
     }
-    
-    // TODO Document.
+
+    /**
+     * Create a copy of the given diffuser. The diffuser copy will not reference
+     * any of the objects referenced by the original diffuser.
+     * 
+     * @param diffuser
+     *            The diffuser to copy.
+     */
     public Diffuser(Diffuser diffuser) {
         associations = new ClassAssociation<ObjectDiffuser>(diffuser.associations);
     }

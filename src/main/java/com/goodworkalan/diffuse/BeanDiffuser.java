@@ -119,7 +119,16 @@ class BeanDiffuser implements ObjectDiffuser {
         return diffused;
     }
     
-    // TODO Document.
+    /**
+     * Get the bean properties for the given bean class. This method is
+     * extracted in order to test introspection exception handling.
+     * 
+     * @param beanClass
+     *            The bean class.
+     * @param flags
+     *            The flags to pass to the introspector.
+     * @return The bean information.
+     */
     static final BeanInfo introspect(Class<?> beanClass, Class<?> stopClass) {
         try {
             return Introspector.getBeanInfo(beanClass, stopClass);
