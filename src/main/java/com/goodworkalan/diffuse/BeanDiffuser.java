@@ -1,22 +1,13 @@
 package com.goodworkalan.diffuse;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import com.goodworkalan.reflective.ReflectiveException;
-import com.goodworkalan.reflective.getter.FieldGetter;
 import com.goodworkalan.reflective.getter.Getter;
-import com.goodworkalan.reflective.getter.MethodGetter;
+import com.goodworkalan.reflective.getter.Getters;
 
 /**
  * Diffuses any object into a <code>java.util.Map</code> where fields and Java
@@ -30,9 +21,6 @@ import com.goodworkalan.reflective.getter.MethodGetter;
 class BeanDiffuser implements ObjectDiffuser {
     /** The singleton instance of the bean diffuser. */
     public final static ObjectDiffuser INSTANCE = new BeanDiffuser();
-    
-    /** The cache of classes to their list of getters. */
-    private final static ConcurrentMap<Class<?>, List<Getter>> GETTERS = new ConcurrentHashMap<Class<?>, List<Getter>>();
 
     /**
      * Freeze the given object, copying all arrays and Java collections classes,
@@ -77,26 +65,9 @@ class BeanDiffuser implements ObjectDiffuser {
      */
     protected Map<String, Object> modifiable(Diffuser diffuser, Object object, StringBuilder path, Set<String> includes) {
         Class<?> beanClass = object.getClass();
-        List<Getter> getters = GETTERS.get(beanClass);
-        if (getters == null) {
-            Map<String, Getter> properties = new LinkedHashMap<String, Getter>();
-            BeanInfo beanInfo = introspect(beanClass, Object.class);
-            for (PropertyDescriptor descriptor : beanInfo.getPropertyDescriptors()) {
-                java.lang.reflect.Method read = descriptor.getReadMethod();
-                if (read != null) {
-                    String name = descriptor.getName();
-                    properties.put(name, new MethodGetter(read, name));
-                }
-            }
-            for (java.lang.reflect.Field field : beanClass.getFields()) {
-                properties.put(field.getName(), new FieldGetter(field));
-            }
-            getters = new ArrayList<Getter>(properties.values());
-            GETTERS.put(beanClass, getters);
-        }
         int index = path.length();
         Map<String, Object> diffused = new LinkedHashMap<String, Object>();
-        for (Getter getter : getters) {
+        for (Getter getter : Getters.getGetters(beanClass).values()) {
             String name = getter.getName();
             path.append(name);
             ObjectDiffuser converter = diffuser.getDiffuser(getter.getType());
@@ -119,24 +90,6 @@ class BeanDiffuser implements ObjectDiffuser {
         return diffused;
     }
     
-    /**
-     * Get the bean properties for the given bean class. This method is
-     * extracted in order to test introspection exception handling.
-     * 
-     * @param beanClass
-     *            The bean class.
-     * @param flags
-     *            The flags to pass to the introspector.
-     * @return The bean information.
-     */
-    static final BeanInfo introspect(Class<?> beanClass, Class<?> stopClass) {
-        try {
-            return Introspector.getBeanInfo(beanClass, stopClass);
-        } catch (IntrospectionException e) {
-            throw new DiffuseException(BeanDiffuser.class, "getBeanInfo", e, beanClass);
-        }
-    }
-
     /**
      * Return true indicating that this is a diffuser for containers of other
      * objects and not a scalar.

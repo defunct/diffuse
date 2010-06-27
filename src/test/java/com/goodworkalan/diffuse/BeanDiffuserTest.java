@@ -8,16 +8,6 @@ import org.testng.annotations.Test;
  * @author Alan Gutierrez
  */
 public class BeanDiffuserTest {
-    /** Test failed introspection. */
-    @Test(expectedExceptions = DiffuseException.class)
-    public void introspection() {
-        new DiffuseExceptionCatcher(new Runnable() {
-            public void run() {
-                BeanDiffuser.introspect(String.class, Number.class);
-            }
-        }, "BeanDiffuser/getBeanInfo", "Unable to get bean information for class [java.lang.String].").run();
-    }
-    
     /** Test reflection exception on field get. */
     @Test(expectedExceptions = DiffuseException.class)
     public void failedGet() throws SecurityException, NoSuchFieldException {
