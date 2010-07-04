@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.goodworkalan.reflective.ReflectiveException;
 import com.goodworkalan.reflective.getter.Getter;
 import com.goodworkalan.reflective.getter.Getters;
 
@@ -75,8 +74,11 @@ class BeanDiffuser implements ObjectDiffuser {
                 Object value;
                 try {
                     value = getter.get(object);
-                } catch (ReflectiveException e) {
-                    throw new DiffuseException(BeanDiffuser.class, "getter", getter.getName(), getter.getType(), object.getClass());
+                } catch (Exception e) {
+                    checkRuntimeException(e);
+                    throw new IllegalArgumentException(String.format(
+                            "\n\tUnable to set bean property.\n" +
+                            "\t\tClass: [%s]\n\t\tProperty: [%s], Type[%s]", getter.getMember().getDeclaringClass(), getter.getName(), getter.getType()), e);
                 }
                 if (value == null) {
                     diffused.put(name, value);
@@ -88,6 +90,21 @@ class BeanDiffuser implements ObjectDiffuser {
             path.setLength(index);
         }
         return diffused;
+    }
+
+    /**
+     * Throw the given exception if it is a <code>RuntimeException</code>. This
+     * method extracted for isolation in testing.
+     * 
+     * @param e
+     *            The exception.
+     * @exception RuntimeException
+     *                If the given exception is a <code>RuntimeException</code>.
+     */
+    static void checkRuntimeException(Exception e) {
+        if (e instanceof RuntimeException) {
+            throw (RuntimeException) e;
+        }
     }
     
     /**

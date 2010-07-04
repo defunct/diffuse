@@ -1,5 +1,7 @@
 package com.goodworkalan.diffuse;
 
+import static org.testng.Assert.assertEquals;
+
 import org.testng.annotations.Test;
 
 /**
@@ -9,13 +11,13 @@ import org.testng.annotations.Test;
  */
 public class BeanDiffuserTest {
     /** Test reflection exception on field get. */
-    @Test(expectedExceptions = DiffuseException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void failedGet() throws SecurityException, NoSuchFieldException {
-        new DiffuseExceptionCatcher(new Runnable() {
-            public void run() {
-                new Diffuser().diffuse(new BeanOfEvil());
-            }
-        }, "BeanDiffuser/getter", "Unable to get the field [evil] of type [java.lang.String] from an object of class [com.goodworkalan.diffuse.BeanOfEvil].").run();
+        try {
+            new Diffuser().diffuse(new BeanOfEvil());
+        } catch (IllegalArgumentException e) {
+            assertEquals(e.getMessage(), "\n\tUnable to set bean property.\n\t\tClass: [class com.goodworkalan.diffuse.BeanOfEvil]\n\t\tProperty: [evil], Type[class java.lang.String]");
+            throw e;
+        }
     }
-
 }

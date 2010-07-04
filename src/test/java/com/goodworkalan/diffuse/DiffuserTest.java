@@ -1,12 +1,15 @@
 package com.goodworkalan.diffuse;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
 /**
